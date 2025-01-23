@@ -1,5 +1,6 @@
 package korweb.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import korweb.model.dto.MemberDto;
 import korweb.model.entity.MemberEntity;
@@ -57,6 +58,7 @@ public class MemberService {
 
         if( result == true ){
             System.out.println("로그인성공");
+            setSession(memberDto.getMid()) ;
             return true; // 로그인 실패
         }else{
             System.out.println("로그인실패");
@@ -64,6 +66,82 @@ public class MemberService {
         }
 
     } // f end
+
+    // * 로그인 했다는 증거/기록
+    @Autowired private HttpServletRequest request;
+
+    // 2. 세션 저장 : 로그인
+    @Transactional
+    public boolean setSession( String mid ){
+        request.getSession().setAttribute("loginInfo" , mid ); // *회원번호( 1 ) , 시큐리티 ( 권한 )
+        return true;
+    } // f end
+
+    // 3. 세션 삭제 : 로그아웃
+    @Transactional
+    public boolean deleteSession( ){
+        request.getSession().setAttribute("loginInfo" , null );
+        return true;
+    }
+
+    // 4. 세션 정보 반환 : 세션 정보 확인
+    @Transactional
+    public String  getSession(){
+        Object object = request.getSession().getAttribute("loginInfo");
+        if( object != null ){
+            return (String)object; // 강제형변환
+        }
+        return null;
+    }
+    // 3. 아이디로 내 정보 조회
+    @Transactional
+    public MemberDto getMyInfo( ){
+        String mid = getSession();
+        if( mid!= null ){
+            // 1. id로 entity를 ��아��다.
+            MemberEntity memberEntity = memberRepository.findByMid( mid );
+            if( memberEntity!= null ){
+                // 2. entity -> dto 로 변환
+                MemberDto memberDto = memberEntity.toDto();
+                // 3. dto -> view 에서 ��� object 로 변환
+                return memberDto; // 로그인 성공
+            }
+        }
+        return null; // 로그인 실��
+    }
+
+    // 4. 회원 탈퇴
+    @Transactional
+    public boolean myDelete(){
+        String mid = getSession();
+        if( mid!= null ){
+            // 1. id 로 entity를 ��아서 ��제
+            MemberEntity memberEntity = memberRepository.findByMid( mid );
+            if( memberEntity!= null ){
+                // 3. dto -> view 에서 object 로 변환
+                memberRepository.delete( memberEntity ); // delete
+                deleteSession();
+                return true; // ���원 ����� 성공
+            }
+        }
+        return false; // ���원 ����� 실��
+    }
+    // 5. 회원 정보 수정
+    @Transactional
+    public boolean myUpdate( MemberDto memberDto ){
+        String mid = getSession();
+        if( mid!= null ){
+            // 1. id 로 entity를 ��아서 ���
+            MemberEntity memberEntity = memberRepository.findByMid( mid );
+            if( memberEntity!= null ){
+                // 2. dto -> entity 로 변환
+                memberEntity.setMname( memberDto.getMname() );
+                memberEntity.setMemail( memberDto.getMemail() );
+                return true;
+            }
+        }
+        return false;
+    }
 } // class end
 
 
