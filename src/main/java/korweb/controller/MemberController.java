@@ -3,10 +3,7 @@ package korweb.controller;
 import korweb.model.dto.MemberDto;
 import korweb.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class MemberController {
@@ -36,6 +33,25 @@ public class MemberController {
     public boolean logout(){
         return memberService.deleteSession();
     }
+
+    // [6] 내정보 조회
+    @GetMapping("/member/myinfo.do")
+    public MemberDto myInfo(){
+        return memberService.getMyInfo();
+    }
+
+    // [7] 회원탈퇴
+    @DeleteMapping("/member/delete.do")
+    public boolean myDelete(){
+        return memberService.myDelete();
+    }
+
+    // [8] 회원정보 수정
+    @PutMapping("/member/update.do")
+    public boolean myUpdate( @RequestBody MemberDto memberDto ){
+        return memberService.myUpdate( memberDto );
+    }
+
 
 } // class end
 

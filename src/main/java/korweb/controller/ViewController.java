@@ -19,4 +19,20 @@ public class ViewController {
     @GetMapping("/member/signup")
     public String signup(){ return "/member/signup.html"; }
 
+    // [4] 마이페이지 를 반환 해주는 메소드
+    @GetMapping("/member/info")
+    public String myInfo(){ return "/member/info.html";}
+
+
 } // class end
+
+
+
+
+
+
+
+
+
+
+

@@ -101,6 +101,39 @@ public class MemberService {
         return true;
     }
 
+    // [6] 현재 로그인된 회원의 회원정보 조회
+    public MemberDto getMyInfo(){
+        String mid = getSession();  // 1. 현재 세션에 저장된 회원 아이디 조회
+        if( mid != null ){   // 2. 만약에 로그인상태이면
+            MemberEntity memberEntity = memberRepository.findByMid( mid );  // 3. 회원아이디로 엔티티 조회
+            MemberDto memberDto = memberEntity.toDto(); // 4. entity --> dto 변환
+            return memberDto;// 5. 반환
+        }
+        return null; // * 비로그인상태이면
+    } // f end
+    // [7] 현재 로그인된 회원 탈퇴
+    public boolean myDelete( ){
+        String mid = getSession(); // 1. 현재 세션에 저장된 회원 아이디 조회
+        if( mid != null ){// 2. 만약에 로그인상태이면
+            MemberEntity memberEntity = memberRepository.findByMid( mid ); // 3. 현재 로그인된 아이디로 엔티티 조회
+            memberRepository.delete( memberEntity ); // 4. 엔티티 탈퇴/삭제 하기
+            deleteSession();// ** 로그인정보 지우기 : 로그아웃
+            return true;// 5. 반환
+        }
+        return false; // * 비로그인상태이면
+    } // f end
+    // [8] 현재 로그인된 회원 정보 수정 , mname 닉네임 , memail 이메일
+    @Transactional
+    public boolean myUpdate( MemberDto memberDto ){
+        String mid = getSession();
+        if( mid != null ){
+            MemberEntity memberEntity = memberRepository.findByMid( mid );
+            memberEntity.setMname( memberDto.getMname() );
+            memberEntity.setMemail( memberDto.getMemail() );
+            return true;
+        }
+        return false;
+    } // f end
 
 } // class end
 

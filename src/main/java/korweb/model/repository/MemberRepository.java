@@ -30,7 +30,12 @@ public interface MemberRepository extends JpaRepository<MemberEntity , Integer> 
     */
 
     // [1] 로그인 추상메소드 : existsBy필드명And필드명
+        // DAO : select * from member where mid = ? and mpwd = ?
     boolean existsByMidAndMpwd( String mid , String mpwd );
+
+    // [2] 아이디로 엔티티 조회 : findBy필드명
+        // DAO : select * from member where mid = ?
+    MemberEntity findByMid( String mid );
 
 } // i end
 
