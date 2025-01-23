@@ -1,5 +1,7 @@
 package korweb.service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import korweb.model.dto.MemberDto;
 import korweb.model.entity.MemberEntity;
@@ -57,13 +59,46 @@ public class MemberService {
 
         if( result == true ){
             System.out.println("로그인성공");
-            return true; // 로그인 실패
+            setSession( memberDto.getMid() ); // 로그인 성공시 세션에 아이디 저장
+            return true; // 로그인 성공
         }else{
             System.out.println("로그인실패");
             return false; // 로그인 실패
         }
-
     } // f end
+    // ===================== 세션 관련 함수 ============== //
+    // (1) 내장된 톰캣 서버의 요청 객체
+    @Autowired private HttpServletRequest request;
+    // [3] 세션객체내 정보 추가 : 세션객체에 로그인된 회원아이디를 추가하는 함수. ( 로그인 )
+    public boolean setSession( String mid ){
+        // (2) 요청 객체를 이용한 톰캣내 세션 객체를 반환한다.
+        HttpSession httpSession = request.getSession();
+        // (3) 세션 객체에 속성(새로운 값) 추가한다.
+        httpSession.setAttribute( "loginId" , mid );
+        return true;
+    } // f end
+    // [4] 세션객체내 정보 반환 : 세션객체에 로그인된 회원아이디 반환하는 함수 ( 내정보 조회 , 수정 등등 )
+    public String getSession( ){
+        // (2)
+        HttpSession httpSession = request.getSession();
+        // (4) 세션 객체에 속성명의 값 반환한다. * 반환타입이 Object 이다.
+        Object object = httpSession.getAttribute( "loginId");
+        // (5) 검사후 타입변환
+        if( object != null ){// 만약에 세션 정보가 존재하면
+            String mid = (String)object; // Object타입 --> String타입
+            return mid;
+        }
+        return null;
+    } // f end
+    // [5] 세션객체내 정보 초기화 : 로그아웃
+    public boolean deleteSession(){
+        HttpSession httpSession = request.getSession(); // (2)
+        // (3) 세션객체 안에 특정한 속성명 제거
+        httpSession.removeAttribute( "loginId");
+        return true;
+    }
+
+
 } // class end
 
 
