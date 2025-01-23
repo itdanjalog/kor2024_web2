@@ -69,6 +69,7 @@ public class MemberService {
     // ===================== 세션 관련 함수 ============== //
     // (1) 내장된 톰캣 서버의 요청 객체
     @Autowired private HttpServletRequest request;
+
     // [3] 세션객체내 정보 추가 : 세션객체에 로그인된 회원아이디를 추가하는 함수. ( 로그인 )
     public boolean setSession( String mid ){
         // (2) 요청 객체를 이용한 톰캣내 세션 객체를 반환한다.
@@ -77,6 +78,7 @@ public class MemberService {
         httpSession.setAttribute( "loginId" , mid );
         return true;
     } // f end
+
     // [4] 세션객체내 정보 반환 : 세션객체에 로그인된 회원아이디 반환하는 함수 ( 내정보 조회 , 수정 등등 )
     public String getSession( ){
         // (2)
@@ -90,6 +92,7 @@ public class MemberService {
         }
         return null;
     } // f end
+
     // [5] 세션객체내 정보 초기화 : 로그아웃
     public boolean deleteSession(){
         HttpSession httpSession = request.getSession(); // (2)
