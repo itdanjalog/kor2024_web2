@@ -23,6 +23,9 @@ public class ViewController {
     @GetMapping("/member/info")
     public String myInfo(){ return "/member/info.html";}
 
+    // [5] 수정페이지 를 반환 해주는 메소드
+    @GetMapping("/member/update")
+    public String myUpdate(){ return "/member/update.html";}
 
 } // class end
 
