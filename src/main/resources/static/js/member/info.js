@@ -29,4 +29,21 @@ const onDelete = ( ) => {
     }).catch( e => { console.log(e); })
 } // f enmd 
 
+// [3] 마이페이지 에서 (로그인된)내 포인트 지급 전체 내역 조회
+const getPointInfo = ( ) => {
+    // 1. fetch 이용한 내정보 서비스 요청 과 응답 받기
+    fetch( '/member/point/list.do' , { method : 'GET'} )
+    .then( response => response.json() )
+    .then( data =>{
+        if( data != '' ){// 응답 결과가 존재하면
+           let pointTable = document.querySelector('.pointTable')
+           let html = ``;
+           data.forEach( ( point , index ) =>{
+                html += `<tr> <th> ${ index+1 } </th> <td> ${ point.cdate }</td> <td> ${ point.pcontent} </td> <td> ${ point.pcount} </td> </tr>`
+           } )
+           pointTable.innerHTML = html
+        }
+    }).catch( e => { console.log(e)})
+} // f end
+getPointInfo(); // info.html 이 열릴때 내정보 불러오기 함수 실행
 
