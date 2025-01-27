@@ -1,9 +1,12 @@
 package korweb.controller;
 
 import korweb.model.dto.MemberDto;
+import korweb.model.dto.PointDto;
 import korweb.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class MemberController {
@@ -52,6 +55,16 @@ public class MemberController {
         return memberService.myUpdate( memberDto );
     }
 
+    // [10] 내 포인트 지급 전제 내역 조회
+    @GetMapping("/member/point/list.do")
+    public List<PointDto> pointList(){
+        return memberService.pointList();
+    }
+    // [11] 현재 내 포인트 조회
+    @GetMapping("/member/point/info.do")
+    public int pointInfo(){
+        return memberService.pointInfo();
+    }
 
 } // class end
 
