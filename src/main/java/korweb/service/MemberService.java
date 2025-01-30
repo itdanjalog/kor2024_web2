@@ -22,9 +22,21 @@ import java.util.List;
 public class MemberService {
     @Autowired private MemberRepository memberRepository;
 
+    @Autowired private FileService fileService;
+
     // [1]. 회원가입 서비스
     @Transactional // 트랜잭션
     public boolean signup( MemberDto memberDto ){
+
+            // 파일 업로드.
+        if( memberDto.getUploadfiles() != null ){
+            String result = fileService.fileUpload( memberDto.getUploadfiles().get(0) );
+            if( result != null ){
+                memberDto.setMimg( result );
+            }
+        }
+
+
         // 1.  저장할 dto를 entity 로 변환한다.
         MemberEntity memberEntity = memberDto.toEntity();
         // 2. 변환된 entity를 save한다.

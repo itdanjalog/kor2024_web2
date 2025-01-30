@@ -15,7 +15,8 @@ public class MemberController {
 
     // 1. 회원가입 HTTP 매핑
     @PostMapping("/member/signup.do")
-    public boolean signup(@RequestBody MemberDto memberDto ){
+    public boolean signup(  MemberDto memberDto ){
+        System.out.println("memberDto = " + memberDto);
         return memberService.signup( memberDto );
     } // f end
 

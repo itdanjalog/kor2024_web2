@@ -3,6 +3,8 @@ package korweb.model.entity;
 import jakarta.persistence.*;
 import korweb.model.dto.MemberDto;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @AllArgsConstructor@NoArgsConstructor // 룸복
 @Entity // 엔티티
 @Table( name = "member") // 테이블명
+@DynamicInsert
 public class MemberEntity extends BaseTime {
 
     @Id // pk
@@ -28,6 +31,11 @@ public class MemberEntity extends BaseTime {
     @Column(  nullable = false , unique = true , columnDefinition = "varchar(50)" )
     private String memail; // 회원이메일
 
+    @Column( nullable = false , columnDefinition = "varchar(255)" )
+    @ColumnDefault("'default.jpg'")     // int , default 0
+    private String mimg ;
+
+
     // entity --> dto 변환함수
     public MemberDto toDto(){
         return MemberDto.builder()
@@ -36,6 +44,7 @@ public class MemberEntity extends BaseTime {
                 .mpwd( this.mpwd )
                 .mname( this.mname )
                 .memail( this.memail)
+                .mimg( this.mimg )
                 .build();
     }
 }
