@@ -22,9 +22,25 @@ import java.util.List;
 public class MemberService {
     @Autowired private MemberRepository memberRepository;
 
+    @Autowired private FileService fileService; // 파일 서비스 객체
+
     // [1]. 회원가입 서비스
     @Transactional // 트랜잭션
     public boolean signup( MemberDto memberDto ){
+        // day70 : - 프로필사진 첨부파일 존재하면 업로드 진행
+            // (1) 만약에 업로드 파일이 비어 있으면 'default.jpg' 임시용 프로필 사진 등록한다.
+        if( memberDto.getUploadfile().isEmpty() ){
+            memberDto.setMimg( "default.jpg");
+        }
+        else { // (2) 아니고 업로드 파일이 존재하면 , 파일 서비스 객체내 업로드 함수를 호출한다.
+            String fileName = fileService.fileUpload( memberDto.getUploadfile() ); // 업로드 함수에 multipart 객체를 대입해준다.
+            // (3) 만약에 업로드 후 반환된 값이 null 이면 업로드 실패 , null 아니면 업로드 성공
+            if( fileName == null ){ return false; } // 업로드 실패 했으면 회원가입 실패
+            else{
+                memberDto.setMimg( fileName ); // 업로드 성공한 uuid+파일명 을 dto에 대입한다.
+            }
+        }
+
         // 1.  저장할 dto를 entity 로 변환한다.
         MemberEntity memberEntity = memberDto.toEntity();
         // 2. 변환된 entity를 save한다.
@@ -32,6 +48,7 @@ public class MemberService {
         MemberEntity saveEntity = memberRepository.save( memberEntity );
         // 4. 만약에 영속된 엔티티의 회원번호가 0보다 크면 회원가입 성공
         if( saveEntity.getMno() > 0 ){
+            // day69실습 : 포인트 지급
             PointDto pointDto = PointDto.builder()
                     .pcontent("회원가입축하")
                     .pcount( 100 )
