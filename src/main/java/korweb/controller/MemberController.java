@@ -56,8 +56,12 @@ public class MemberController {
     }
 
     // [8] 회원정보 수정
+//    @PutMapping("/member/update.do")
+//    public boolean myUpdate( @RequestBody MemberDto memberDto ){
+//        return memberService.myUpdate( memberDto );
+//    }
     @PutMapping("/member/update.do")
-    public boolean myUpdate( @RequestBody MemberDto memberDto ){
+    public boolean myUpdate(  MemberDto memberDto ){
         return memberService.myUpdate( memberDto );
     }
 
@@ -66,6 +70,7 @@ public class MemberController {
     public List<PointDto> pointList(){
         return memberService.pointList();
     }
+
     // [11] 현재 내 포인트 조회
     @GetMapping("/member/point/info.do")
     public int pointInfo(){

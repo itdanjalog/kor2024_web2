@@ -6,6 +6,7 @@ const getMyInfo = ( ) => {
     .then( response => response.json() )
     .then( data => {
         if( data != ''){
+        document.querySelector('.mimg').src = `/img/${data.mimg}`;
             document.querySelector('.midInput').value = data.mid;
             document.querySelector('.mnameInput').value = data.mname;
             document.querySelector('.memailInput').value = data.memail;
@@ -16,17 +17,30 @@ getMyInfo(); // update.html 이 열릴때 내정보 조회 함수
 
 // [2] 수정 버튼 클릭했을때. 수정처리 
 const onUpdate = ( ) => {
-    // 1. 입력받은 input value 값 가져오기.
-    let mname = document.querySelector('.mnameInput').value;
-    let memail = document.querySelector('.memailInput').value;
-    // 2. 객체화
-    let dataObj = { mname : mname , memail : memail }
-    // 3. fetch 
-    const option = {
-        method : 'PUT' , 
-        headers : {'Content-Type' : 'application/json'},
-        body : JSON.stringify( dataObj )
-    }// o end 
+//    // 1. 입력받은 input value 값 가져오기.
+//    let mname = document.querySelector('.mnameInput').value;
+//    let memail = document.querySelector('.memailInput').value;
+//    // 2. 객체화
+//    let dataObj = { mname : mname , memail : memail }
+//    // 3. fetch
+//    const option = {
+//        method : 'PUT' ,
+//        headers : {'Content-Type' : 'application/json'},
+//        body : JSON.stringify( dataObj )
+//    }// o end
+
+    	// 1. 폼DOM 가져온다.
+    	let memberUpdateForm = document.querySelector( '#memberUpdateForm');
+    	console.log(memberUpdateForm);
+    	// 2. 폼 바이트(바이너리) 객체 변환[ 첨부파일 보낼때는 필수 ]
+    	let memberUpdateFormData = new FormData( memberUpdateForm );
+    	console.log(memberUpdateFormData);
+
+    	const option = {
+    	    method: 'PUT',
+    	    body : memberUpdateFormData
+    	}
+
     fetch( '/member/update.do' , option )
     .then( response => response.json() )
     .then( data => {

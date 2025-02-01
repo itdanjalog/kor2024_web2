@@ -3,6 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <style>
+        .mimgbox{
+	text-align: center;
+}
+.mimg{
+	width: 250px;
+    height: 250px;
+    border-radius: 30px;
+    border: 1px solid #e8e8e8;
+    padding: 2px;
+    object-fit: cover;
+}
+
+    </style>
+
 </head>
 <body>
 
@@ -10,23 +26,32 @@
     <div class="container col-xl-10 col-xxl-8 px-4 py-5">
         <div class="row align-items-center g-lg-5 py-5">
             <div class="col-md-10 mx-auto col-lg-5">
-                <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
-
+                <form id="memberUpdateForm" class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
                     <div class="form-floating mb-3">
                         <h5> 내정보 수정 </h5>
                     </div>
+
+                    <div class="form-floating mb-3 mimgbox">
+                        <img src="" class="mimg"/>
+                    </div>
+
+                    <div class="form-floating mb-3 mimgbox">
+                        <input type="file" name="uploadfile" class="form-control " id="floatingInput" placeholder="img">
+                        <label for="floatingInput">프로필사진</label>
+                    </div>
+
                     <div class="form-floating mb-3">
                         <input type="text" readonly value="qweqwe" class="form-control midInput" id="floatingInput" placeholder="ID">
                         <label for="floatingInput">계정아이디</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="text" value="" class="form-control mnameInput" id="floatingInput" placeholder="Name">
+                        <input type="text" name="mname" value="" class="form-control mnameInput" id="floatingInput" placeholder="Name">
                         <label for="floatingInput">닉네임</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="text" value="" class="form-control memailInput" id="floatingInput" placeholder="Email">
+                        <input type="text" name="memail" value="" class="form-control memailInput" id="floatingInput" placeholder="Email">
                         <label for="floatingInput">이메일</label>
                     </div>
 

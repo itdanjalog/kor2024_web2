@@ -162,6 +162,7 @@ public class MemberService {
                 relatedEntity.setMemberEntity(null);
             }
 
+            fileService.fileDelete( memberEntity.getMimg() );
             memberRepository.delete( memberEntity ); // 4. 엔티티 탈퇴/삭제 하기
             deleteSession();// ** 로그인정보 지우기 : 로그아웃
             return true;// 5. 반환
@@ -177,6 +178,21 @@ public class MemberService {
             MemberEntity memberEntity = memberRepository.findByMid( mid );
             memberEntity.setMname( memberDto.getMname() );
             memberEntity.setMemail( memberDto.getMemail() );
+            if( memberDto.getUploadfile().isEmpty() ){
+
+            }
+            else { // (2) 아니고 업로드 파일이 존재하면 , 파일 서비스 객체내 업로드 함수를 호출한다.
+                String fileName = fileService.fileUpload( memberDto.getUploadfile() ); // 업로드 함수에 multipart 객체를 대입해준다.
+                // (3) 만약에 업로드 후 반환된 값이 null 이면 업로드 실패 , null 아니면 업로드 성공
+                if( fileName == null ){ return false; } // 업로드 실패 했으면 회원가입 실패
+                else{
+
+                    fileService.fileDelete( memberEntity.getMimg() );
+
+                    memberEntity.setMimg( fileName ); // 업로드 성공한 uuid+파일명 을 dto에 대입한다.
+                }
+            }
+
             return true;
         }
         return false;

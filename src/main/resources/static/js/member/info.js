@@ -7,6 +7,7 @@ const getMyInfo = ( ) => {
     .then( data =>{
         if( data != '' ){// 응답 결과가 존재하면 
             // 응답 결과를 각 input value 에 각 정보들을 대입하기.
+            document.querySelector('.mimg').src = `/img/${data.mimg}`;
             document.querySelector('.midInput').value = data.mid;
             document.querySelector('.mnameInput').value = data.mname;
             document.querySelector('.memailInput').value = data.memail;
