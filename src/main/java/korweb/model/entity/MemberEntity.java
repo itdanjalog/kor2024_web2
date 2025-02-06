@@ -28,6 +28,9 @@ public class MemberEntity extends BaseTime {
     @Column(  nullable = false , unique = true , columnDefinition = "varchar(50)" )
     private String memail; // 회원이메일
 
+    @Column( nullable = false , columnDefinition = "varchar(255)" )
+    private String mimg;    // 회원 프로필사진명
+
     // entity --> dto 변환함수
     public MemberDto toDto(){
         return MemberDto.builder()
@@ -36,6 +39,7 @@ public class MemberEntity extends BaseTime {
                 .mpwd( this.mpwd )
                 .mname( this.mname )
                 .memail( this.memail)
+                .mimg( this.mimg )
                 .build();
     }
 }
