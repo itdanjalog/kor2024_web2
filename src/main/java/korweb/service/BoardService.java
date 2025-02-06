@@ -75,7 +75,7 @@ public class BoardService {
         // (1) 조회할 특정 게시물의 번호를 매개변수로 받는다.  int bno
         // (2) 조회할 특정 게시물의 번호의 엔티티를 조회한다. .findById() 메소드는 반환타입이 Optional 이다. 조회된 엔티티 여부 메소드 제공한다. .isPresent()
         Optional< BoardEntity > optional = boardRepository.findById( bno );
-        // (3) 만약에 조회된 엔티티가 있으면
+        // (3) 만약에 조회된 엔티티가 있으면 true / false
         if( optional.isPresent() ){
             // (4) optional 에서 엔티티 꺼내기. .get()
             BoardEntity boardEntity = optional.get();
