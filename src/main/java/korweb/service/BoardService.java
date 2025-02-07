@@ -74,6 +74,7 @@ public class BoardService {
         // (3) 결과를 리턴한다.
         return boardDtoList;
     } // f end
+
     // [3] 게시물 특정(개별) 조회
     public BoardDto boardFind( int bno ){
         // (1) 조회할 특정 게시물의 번호를 매개변수로 받는다.  int bno
