@@ -31,6 +31,10 @@ public class ViewController {
     @GetMapping("/board")
     public String board(){ return "/board/board.html"; }
 
+    // [7] 게시물 쓰기 페이지를 반환 해주는 메소드
+    @GetMapping("/board/write")
+    public String boardWrite(){ return "/board/write.html";}
+
 
 } // class end
 
