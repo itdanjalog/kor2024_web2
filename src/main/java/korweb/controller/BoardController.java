@@ -17,11 +17,13 @@ public class BoardController {
     public boolean boardWrite(@RequestBody BoardDto boardDto ){
         return boardService.boardWrite( boardDto);
     }
+
     // [2] 게시물 전체 조회
     @GetMapping("/board/findall.do")
-    public List<BoardDto> boardFindAll( ){
-        return boardService.boardFindAll();
+    public List<BoardDto> boardFindAll( @RequestParam int cno ){ // 조회할 카테고리번호
+        return boardService.boardFindAll( cno );
     }
+
     // [3] 게시물 특정(개별) 조회
     @GetMapping("/board/find.do")
     public BoardDto boardFind( @RequestParam int bno ){

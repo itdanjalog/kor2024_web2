@@ -53,9 +53,10 @@ public class BoardService {
     } // f end
 
     // [2] 게시물 전체 조회
-    public List<BoardDto> boardFindAll( ){
+    public List<BoardDto> boardFindAll(  int cno ){
         // (1) 모든 게시물의 엔티티를 조회
         List< BoardEntity > boardEntityList = boardRepository.findAll();
+            // * cno 이용한 동일한 cno의 게시물정보 찾기.
         // (2) 모든 게시물의 엔티티를 DTO로 변환
             // - DTO를 저장할 리스트선언
             List<BoardDto> boardDtoList = new ArrayList<>();
@@ -63,9 +64,12 @@ public class BoardService {
                 // [1] 리스트변수명.forEach( 반복변수명 -> { 실행문; } );
          boardEntityList.forEach( entity -> {
                 // [2] 엔티티 --> dto 변환
-             BoardDto boardDto = entity.toDto();
-                // [3] 변환된 dto 를 dto 리스트에 담는다.
-             boardDtoList.add( boardDto );
+                // * 만약에 현재 조회중인 게시물의 카테고리가 선택한 카테고리와 같다면
+             if( entity.getCategoryEntity().getCno() == cno ) {
+                 BoardDto boardDto = entity.toDto();
+                 // [3] 변환된 dto 를 dtolist 리스트에 담는다.
+                 boardDtoList.add( boardDto );
+             }else{ }
          });
         // (3) 결과를 리턴한다.
         return boardDtoList;

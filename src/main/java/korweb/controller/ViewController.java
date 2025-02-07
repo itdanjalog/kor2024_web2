@@ -27,7 +27,21 @@ public class ViewController {
     @GetMapping("/member/update")
     public String myUpdate(){ return "/member/update.html";}
 
+    // [6] 게시물 목록 페이지를 반환 해주는 메소드
+    @GetMapping("/board")
+    public String board(){ return "/board/board.html"; }
+
+
 } // class end
+
+
+
+
+
+
+
+
+
 
 
 
