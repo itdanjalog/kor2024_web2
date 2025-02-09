@@ -9,12 +9,17 @@ import korweb.model.repository.BoardRepository;
 import korweb.model.repository.CategoryRepository;
 import korweb.model.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BoardService {
@@ -53,27 +58,55 @@ public class BoardService {
     } // f end
 
     // [2] 게시물 전체 조회
-    public List<BoardDto> boardFindAll(  int cno ){
-        // (1) 모든 게시물의 엔티티를 조회
-        List< BoardEntity > boardEntityList = boardRepository.findAll();
-            // * cno 이용한 동일한 cno의 게시물정보 찾기.
-        // (2) 모든 게시물의 엔티티를 DTO로 변환
-            // - DTO를 저장할 리스트선언
-            List<BoardDto> boardDtoList = new ArrayList<>();
-            // - 반복문 이용하여 모든 엔티티를 dto로 변환하기
-                // [1] 리스트변수명.forEach( 반복변수명 -> { 실행문; } );
-         boardEntityList.forEach( entity -> {
-                // [2] 엔티티 --> dto 변환
-                // * 만약에 현재 조회중인 게시물의 카테고리가 선택한 카테고리와 같다면
-             if( entity.getCategoryEntity().getCno() == cno ) {
-                 BoardDto boardDto = entity.toDto();
-                 // [3] 변환된 dto 를 dtolist 리스트에 담는다.
-                 boardDtoList.add( boardDto );
-             }else{ }
-         });
-        // (3) 결과를 리턴한다.
-        return boardDtoList;
-    } // f end
+//    public List<BoardDto> boardFindAll(  int cno ){
+//        /*
+//        * @Query("SELECT b FROM BoardEntity b ORDER BY b.cdate DESC")
+//List<BoardEntity> findAllOrderByCdateDesc();
+//        * */
+//        // (1) 모든 게시물의 엔티티를 조회
+//        //List<BoardEntity> boardEntityList = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "bno"));
+//
+//        int page = 0; // 0부터 시작 (첫 번째 페이지)
+//        int size = 3; // 페이지당 3개 출력
+//
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "bno"));
+//        Page<BoardEntity> boardPage = boardRepository.findAll(pageable);
+//
+//        List<BoardEntity> boardEntityList = boardPage.getContent();
+//        System.out.println("boardEntityList = " + boardEntityList);
+//
+//            // * cno 이용한 동일한 cno의 게시물정보 찾기.
+//        // (2) 모든 게시물의 엔티티를 DTO로 변환
+//            // - DTO를 저장할 리스트선언
+//            List<BoardDto> boardDtoList = new ArrayList<>();
+//            // - 반복문 이용하여 모든 엔티티를 dto로 변환하기
+//                // [1] 리스트변수명.forEach( 반복변수명 -> { 실행문; } );
+//        boardEntityList.forEach( entity -> {
+//                // [2] 엔티티 --> dto 변환
+//                // * 만약에 현재 조회중인 게시물의 카테고리가 선택한 카테고리와 같다면
+//             if( entity.getCategoryEntity().getCno() == cno ) {
+//                 BoardDto boardDto = entity.toDto();
+//                 // [3] 변환된 dto 를 dtolist 리스트에 담는다.
+//                 boardDtoList.add( boardDto );
+//             }else{ }
+//         });
+//        // (3) 결과를 리턴한다.
+//        return boardDtoList;
+//    } // f end
+
+    public List<BoardDto> boardFindAll(int cno , int page ) {
+        page = page-1; // 0부터 시작
+        int size = 5; // 페이지당 3개 출력
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<BoardEntity> boardPage = boardRepository.findByCno(cno, pageable);
+
+        return boardPage.getContent()
+                .stream()
+                .map(BoardEntity::toDto)
+                .collect(Collectors.toList());
+    }
+
 
     // [3] 게시물 특정(개별) 조회
     public BoardDto boardFind( int bno ){
