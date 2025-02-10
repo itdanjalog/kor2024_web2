@@ -19,10 +19,11 @@ import java.util.*;
 @Service
 public class BoardService {
 
-    @Autowired MemberService memberService;
-    @Autowired MemberRepository memberRepository; // member 엔티티 조작하는 인터페이스
-    @Autowired BoardRepository boardRepository; // board 엔티티 조작하는 인터페이스
-    @Autowired CategoryRepository categoryRepository;   // category 엔티티 조작하는 인터페이스
+    @Autowired private MemberService memberService;
+    @Autowired private MemberRepository memberRepository; // member 엔티티 조작하는 인터페이스
+    @Autowired private BoardRepository boardRepository; // board 엔티티 조작하는 인터페이스
+    @Autowired private CategoryRepository categoryRepository;   // category 엔티티 조작하는 인터페이스
+    @Autowired private ReplyRepository replyRepository;
 
     // [1] (회원제) 게시물 쓰기
     public boolean boardWrite( BoardDto boardDto ){
@@ -75,7 +76,7 @@ public class BoardService {
         return boardDtoList;
     } // f end
 
-    @Autowired private ReplyRepository replyRepository;
+
 
     // [3] 게시물 특정(개별) 조회
     public BoardDto boardFind( int bno ){
@@ -129,5 +130,73 @@ public class BoardService {
         return false; // 임시용.
     }
 
+    // ============================================== 댓글 =================================== //
+    // [6] 댓글 쓰기
+    public boolean replyWrite( Map<String,String> replyDto ){
+        // 1. 현재 로그인된 회원 정보 조회
+        MemberDto memberDto = memberService.getMyInfo();
+        // 2. 만약에 로그인된 정보가 없으면 함수 종료
+        if( memberDto == null ) return false;
+        // [로그인 중 이면 ]
+        // 3. 회원엔티티 조회
+        MemberEntity memberEntity = memberRepository.findById( memberDto.getMno() ).get();
 
-}
+        // 3. 현재 작성할 댓글이 위치한 조회중인 게시물 엔티티 조회
+            // Integer.parseInt( "문자열" ) 문자열타입 --> 정수타입 반환 함수.
+        int bno =  Integer.parseInt( replyDto.get("bno") ) ;
+        BoardEntity boardEntity = boardRepository.findById( bno ).get();
+
+        // 4. 입력받은 매개변수 map를 entity로 변환
+        ReplyEntity replyEntity = new ReplyEntity();
+        replyEntity.setRcontent( replyDto.get("rcontent") ); // 댓글 내용 등록
+        replyEntity.setMemberEntity( memberEntity );  // 작성자 등록
+        replyEntity.setBoardEntity( boardEntity ); // 댓글이 위치한 게시물 등록
+
+        // 5. 생성한 entity 를 저장한다.
+        ReplyEntity saveEntity = replyRepository.save( replyEntity );
+        if( saveEntity.getRno() > 0 ){ return  true; } // 댓글번호 생성 되었다면 등록 성공
+        return false; // 아니면 등록 실패
+    } // f end
+
+    // [7] 특정 게시물의 댓글 전체 조회
+    public List<Map<String,String> > replyFindAll( int bno ){
+        // 1. 모든 댓글 엔티티 조회
+        List<ReplyEntity> replyEntityList = replyRepository.findAll();
+        // 2. 모든 댓글 map 저장할 list 선언
+        List< Map<String,String> > replylist = new ArrayList<>();
+        // 3. 모든 댓글 엔티티를 반복문로 조회
+        replyEntityList.forEach( (reply) -> {
+            // * 만약에 현재 조회중인 게시물번호 와 댓글리스트내 반복중인 댓글의 게시물번호 와 같다면
+            if( reply.getBoardEntity().getBno() == bno ){
+                // 4. map 객체 선언
+                Map<String , String > map = new HashMap<>();
+                // 5. map 객체에 하나씩 key:value (엔트리) 으로 저장한다.
+                map.put( "rno" , reply.getRno()+"" );       // 숫자타입 +"" =>문자타입 변환
+                map.put( "rcontent" , reply.getRcontent() );
+                map.put( "cdate" , reply.getCdate().toLocalDate().toString() ); // 날짜와시간 중에 날짜만 추출
+                map.put( "mid" , reply.getMemberEntity().getMid() ); // 댓글 작성자 아이디
+                map.put( "mimg" , reply.getMemberEntity().getMimg() ); // 댓글 작성자 프로필
+                // 6. map를 리스트에 담는다.
+                replylist.add( map );
+            }
+        });
+        // 7. 반복문 종료후 반환한다.
+        return replylist;
+    } // f end
+
+} // class end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
