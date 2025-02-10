@@ -97,7 +97,7 @@ public class BoardService {
                 // 3. 엔티티를 MAP 로 변환 하기 위한 엔티티 리스트를 반복문
             replyEntityList.forEach( (reply) ->{
                 // * 만약에 현재 조회중인 게시물번호 와 댓글리스트내 반복중인 댓글의 게시물번호 와 같다면
-                if( reply.getRno() == bno ){
+                if( reply.getBoardEntity().getBno() == bno ){
                     // 4. map 객체 선언
                     Map<String , String > map = new HashMap<>();
                     // 5. map 객체에 하나씩 key:value (엔트리) 으로 저장한다.
