@@ -5,16 +5,16 @@ import korweb.model.dto.MemberDto;
 import korweb.model.entity.BoardEntity;
 import korweb.model.entity.CategoryEntity;
 import korweb.model.entity.MemberEntity;
+import korweb.model.entity.ReplyEntity;
 import korweb.model.repository.BoardRepository;
 import korweb.model.repository.CategoryRepository;
 import korweb.model.repository.MemberRepository;
+import korweb.model.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BoardService {
@@ -75,6 +75,8 @@ public class BoardService {
         return boardDtoList;
     } // f end
 
+    @Autowired private ReplyRepository replyRepository;
+
     // [3] 게시물 특정(개별) 조회
     public BoardDto boardFind( int bno ){
         // (1) 조회할 특정 게시물의 번호를 매개변수로 받는다.  int bno
@@ -86,6 +88,30 @@ public class BoardService {
             BoardEntity boardEntity = optional.get();
             // (5) 엔티티를 dto 변환
             BoardDto boardDto = boardEntity.toDto();
+                // * 현재 게시물의 댓글 리스트 조회
+                // 1. 모든 게시물 댓글 조회한다.
+            List<ReplyEntity> replyEntityList = replyRepository.findAll();
+                // 2. 모든 댓글을 DTO/MAP 로 변환한 객체들을 저장할 리스트 선언 . --> ReplyDto 대신 MAP 컬렉션 이용한 방법
+                    // List 컬렉션 : [ 값, 값 , 값 ]   vs  Map 컬렉션 : { key : value , key : value , key : value }
+            List<Map<String, String> > replylist = new ArrayList<>();
+                // 3. 엔티티를 MAP 로 변환 하기 위한 엔티티 리스트를 반복문
+            replyEntityList.forEach( (reply) ->{
+                // * 만약에 현재 조회중인 게시물번호 와 댓글리스트내 반복중인 댓글의 게시물번호 와 같다면
+                if( reply.getRno() == bno ){
+                    // 4. map 객체 선언
+                    Map<String , String > map = new HashMap<>();
+                    // 5. map 객체에 하나씩 key:value (엔트리) 으로 저장한다.
+                    map.put( "rno" , reply.getRno()+"" );       // 숫자타입 +"" =>문자타입 변환
+                    map.put( "rcontent" , reply.getRcontent() );
+                    map.put( "cdate" , reply.getCdate().toLocalDate().toString() ); // 날짜와시간 중에 날짜만 추출
+                    map.put( "mid" , reply.getMemberEntity().getMid() ); // 댓글 작성자 아이디
+                    map.put( "mimg" , reply.getMemberEntity().getMimg() ); // 댓글 작성자 프로필
+                    // 6. map를 리스트에 담는다.
+                    replylist.add( map );
+                }
+            });
+                // 7. 반복문 종료된 후 boardDto에 댓글리스트 담기.
+            boardDto.setReplylist( replylist );
             // (6) dto 결과 반환
             return boardDto;
         }

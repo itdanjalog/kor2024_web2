@@ -28,7 +28,7 @@ const findAll = ( ) => {
             data.forEach( board =>{
                 html += `<tr>
                             <td> ${ board.bno } </td>
-                            <td> ${ board.btitle } </td>
+                            <td> <a href="/board/view?bno=${ board.bno }"> ${ board.btitle } </a> </td>
                             <td> ${ board.mid } </td>
                             <td> ${ board.bview } </td>
                             <td> ${ board.cdate } </td>
