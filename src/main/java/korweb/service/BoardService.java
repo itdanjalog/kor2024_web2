@@ -106,7 +106,7 @@ public class BoardService {
             // 만약에 페이징버튼 끝번호가 전체페이지수 보다 같거나크면 페이징버튼끝번호를 전체페이지수로 고정
         if( endBtn >= totalPage ) endBtn = totalPage;
 
-        // 페이징 DTO 이용한 페이징정보 와 자료를 같이 응답/리턴하기.
+        // 페이징 DTO 이용한 페이징정보 와 (페이징된 게시물)자료를 같이 응답/리턴하기.
         PageDto pageDto = PageDto.builder()
                 .totalcount( totalCount )
                 .page( page )
