@@ -12,10 +12,12 @@ console.log( new URL( location.href ).searchParams.get('cno') )
 const findAll = ( ) => {
     // 1. 현재 페이지 URL 에서 매개변수 cno 값 구하기
     const cno = new URL( location.href ).searchParams.get('cno')
+    let page = new URL( location.href ).searchParams.get('page')
+    if( page == null ) page = 1;
     // 2. fetch option
     const option = { method : 'GET' }
     // 3. fetch
-    fetch( `/board/findall.do?cno=${ cno }` , option )
+    fetch( `/board/findall.do?cno=${ cno }&page=${ page }` , option )
         .then( r => r.json() )
         .then( data => {
             // 4. 요청 결과 응답 자료 확인

@@ -20,10 +20,16 @@ public class BoardController {
     }
 
     // [2] 게시물 전체 조회
+//    @GetMapping("/board/findall.do")
+//    public List<BoardDto> boardFindAll( @RequestParam int cno ){ // 조회할 카테고리번호
+//        return boardService.boardFindAll( cno );
+//    }
     @GetMapping("/board/findall.do")
-    public List<BoardDto> boardFindAll( @RequestParam int cno ){ // 조회할 카테고리번호
-        return boardService.boardFindAll( cno );
+    public List<BoardDto> boardFindAll( @RequestParam int cno , @RequestParam int page ){ // 조회할 카테고리번호
+        return boardService.boardFindAll( cno , page );
     }
+
+
 
     // [3] 게시물 특정(개별) 조회
     @GetMapping("/board/find.do")
