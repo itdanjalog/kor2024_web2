@@ -11,6 +11,10 @@ import korweb.model.repository.CategoryRepository;
 import korweb.model.repository.MemberRepository;
 import korweb.model.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,9 +58,22 @@ public class BoardService {
     } // f end
 
     // [2] 게시물 전체 조회
-    public List<BoardDto> boardFindAll(  int cno ){
+    public List<BoardDto> boardFindAll(  int cno , int page ){
+        System.out.println( "카테고리번호 : " + cno ); // 카테고리 번호
+        System.out.println( "페이지 " + page ); // 페이지번호
+        // 페이징처리 방법 : 1.SQL 2.라이브러리(*JPA*)
+        // 1. 페이징 처리 설정 , PageRequest.of( 페이지번호 , 페이지당개수 , 정렬 );
+        Pageable pageable = PageRequest.of( page-1 , 3 , Sort.by( Sort.Direction.DESC , "bno") );
+        // 2. find~~~( pageable ) , find~~( pageable ) 매개변수로 설정 넣어주면 반환값은 Page
+
         // (1) 모든 게시물의 엔티티를 조회
-        List< BoardEntity > boardEntityList = boardRepository.findAll();
+        // List< BoardEntity > boardEntityList = boardRepository.findAll(  );
+        // (1) 모든 게시물의 엔티티를 조회 + 페이징처리
+        // Page< BoardEntity > boardEntityList = boardRepository.findAll( pageable );
+        // (1) 특정한 카테고리의 엔티티를 조회 + 페이징처리
+        Page< BoardEntity > boardEntityList = boardRepository.findByCategoryEntity_Cno( cno , pageable );
+        System.out.println( boardEntityList ); // 확인용 출력
+
             // * cno 이용한 동일한 cno의 게시물정보 찾기.
         // (2) 모든 게시물의 엔티티를 DTO로 변환
             // - DTO를 저장할 리스트선언
