@@ -2,6 +2,7 @@ package korweb.service;
 
 import korweb.model.dto.BoardDto;
 import korweb.model.dto.MemberDto;
+import korweb.model.dto.PageDto;
 import korweb.model.entity.BoardEntity;
 import korweb.model.entity.CategoryEntity;
 import korweb.model.entity.MemberEntity;
@@ -58,7 +59,7 @@ public class BoardService {
     } // f end
 
     // [2] 게시물 전체 조회
-    public List<BoardDto> boardFindAll(  int cno , int page ){
+    public PageDto boardFindAll(  int cno , int page ){
         System.out.println( "카테고리번호 : " + cno ); // 카테고리 번호
         System.out.println( "페이지 " + page ); // 페이지번호
         // 페이징처리 방법 : 1.SQL 2.라이브러리(*JPA*)
@@ -89,8 +90,33 @@ public class BoardService {
                  boardDtoList.add( boardDto );
              }else{ }
          });
-        // (3) 결과를 리턴한다.
-        return boardDtoList;
+         // (3) 결과를 리턴한다.
+        // return boardDtoList;
+        // [*] 페이징 처리된 게시물 정보(자료) 외 페이징 정보도 같이 반환한다.
+        // (1) 현재페이지번호 = page
+        // (2) 전체페이지번호 = totalPage , JPA 의 .getTotalPages() : 조회된 정보의 전체 페이지수 반환 함수.
+        int totalPage = boardEntityList.getTotalPages();
+        // (3) 전체조회된수 = totalCount , JPA 의 .getTotalElements() : 조회된 정보의 전체 개수 반환 함수
+        long totalCount = boardEntityList.getTotalElements();
+        int btnSize = 5; // - 페이지당 표시할 페이징버튼수 , 네이버증권게시판 = 10 , 특정쇼핑몰 = 5 , 디시인사이트게시판 = 15
+        // (4) 조회 페이지의 페이징버튼 시작번호 , 계산식 : ( ( 현재페이지번호 - 1 ) / 페이징버튼수 ) * 페이징버튼수 + 1
+        int startBtn = ( (page-1) / btnSize ) * btnSize + 1 ;
+        // (5) 조회 페이지의 페이징버튼 끝번호 , 계산식 : 시작버튼번호 + ( 페이징버튼수 -1 )
+        int endBtn = startBtn + ( btnSize -1 );
+            // 만약에 페이징버튼 끝번호가 전체페이지수 보다 같거나크면 페이징버튼끝번호를 전체페이지수로 고정
+        if( endBtn >= totalPage ) endBtn = totalPage;
+
+        // 페이징 DTO 이용한 페이징정보 와 자료를 같이 응답/리턴하기.
+        PageDto pageDto = PageDto.builder()
+                .totalcount( totalCount )
+                .page( page )
+                .totalpage( totalPage )
+                .startbtn( startBtn )
+                .endbtn( endBtn )
+                .data( boardDtoList )
+                .build();
+        // 페이징 dto 반환한다 , 현재 함수의 반환타입 List<BoardDto> ---> PageDto 수정
+        return pageDto;
     } // f end
 
 
