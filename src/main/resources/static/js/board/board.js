@@ -1,12 +1,3 @@
-// * js가 열렸는지 확인하기 위해
-console.log( 'board.js open' )
-// * 현재 URL 의 쿼리스트링 매개변수 가져오기
-    // 현재 페이지의 URL 정보가 담긴 객체 생성
-console.log( new URL( location.href ) )
-    // 현재 페이지의 URL 쿼리스트링 정보 속성 반환
-console.log( new URL( location.href ).searchParams )
-    // 현재 페이지의 URL 쿼리스트링 속성 중 'cno' 속성값 반환
-console.log( new URL( location.href ).searchParams.get('cno') )
 
 // [1] 게시물 전체 조회 요청 함수
 const findAll = ( ) => {
@@ -16,10 +7,14 @@ const findAll = ( ) => {
     let page = new URL( location.href ).searchParams.get('page');
     if( page == null) page = 1; // 만약에 page가 없으면 1페이지로 설정
 
+    let key = new URL(location.href).searchParams.get('key') || ''; // key 값이 없으면 빈 문자열
+    let keyword = new URL(location.href).searchParams.get('keyword') || ''; // keyword 값이 없으면 빈 문자열
+
+
     // 2. fetch option
     const option = { method : 'GET' }
     // 3. fetch + 페이징번호
-    fetch( `/board/findall.do?cno=${ cno }&page=${ page }` , option )
+    fetch( `/board/findall.do?cno=${ cno }&page=${ page }&key=${key}&keyword=${keyword}` , option )
         .then( r => r.json() )
         .then( response => {
             // 4. 요청 결과 응답 자료 확인
@@ -45,14 +40,14 @@ const findAll = ( ) => {
             tbody.innerHTML = html;
 
             // 9. 게시물 출력후 페이징 버튼 생성 함수 호출
-            printPageNation( response , cno )
+            printPageNation( response , cno , key, keyword); // key, keyword 전달
         })
         .catch( e => { console.log( e ); } )
 } // f end
 findAll(); // JS가 실행될 때 함수 실행
 
 // [2] 페이징 버튼 생성하는 함수 정의 ,
-const printPageNation = ( response , cno ) => {
+const printPageNation = ( response , cno , key, keyword ) => {
     let page = response.page;   // 현재페이지
     let totalpage = response.totalpage // 전체페이지
     let startbtn = response.startbtn // 현재 페이지의 페이징 버튼 시작번호
@@ -63,28 +58,127 @@ const printPageNation = ( response , cno ) => {
     let html = ``
 
     // 이전 버튼 , 현재페이지 에서 - 1 차감한 페이지 이동 , 만약에 현재페이지가 1 이하 이면 1 고정 , 아니면 - 1
-    html += `<li class="page-item"><a class="page-link" href="/board?cno=${ cno }&page=${ page <= 1 ? 1 : page-1  }">이전</a></li>`
+    html += `<li class="page-item">
+                <a class="page-link" href="/board?cno=${ cno }&page=${ page <= 1 ? 1 : page-1  }&key=${key}&keyword=${keyword}">
+                    이전
+                </a>
+            </li>`
 
     // 페이징 버튼 , 반복문 이용하여 statbtn 부터 endbtn 까지 페이징버튼 만들기
     for( let index = startbtn ; index <= endbtn ; index++ ){
         // 만약에 현재 페이지와 버튼번호가 같다면 .active 부트스트랩 클래스 부여
         html += `<li class="page-item">
-                    <a class="page-link ${ page == index ? 'active' : '' }" href="/board?cno=${ cno }&page=${ index }">
+                    <a class="page-link ${ page == index ? 'active' : '' }" href="/board?cno=${ cno }&page=${ index }&key=${key}&keyword=${keyword}">
                         ${ index }
                     </a>
                 </li>`
     } // f end
 
     // 다음 버튼 , 현재페이지 에서 + 1 증가한 페이지 이동 , 만약에 현재페이지가 전체페이지수 이상 이면 전체페이지수 고정 , 아니면 +1
-    html += `<li class="page-item"><a class="page-link" href="/board?cno=${ cno }&page=${ page >= totalpage ? totalpage : page +1 }">다음</a></li>`
+    html += `<li class="page-item">
+                <a class="page-link" href="/board?cno=${ cno }&page=${ page >= totalpage ? totalpage : page +1 }&key=${key}&keyword=${keyword}">
+                    다음
+                </a>
+            </li>`
 
     // (3) 출력
     pagebox.innerHTML = html;
 }
 
 
+const onSearch = () => {
+    let key = document.querySelector('.key').value;
+    let keyword = document.querySelector('.keyword').value;
+    let cno = new URL(location.href).searchParams.get('cno') || 1; // 현재 카테고리 유지
+
+    // 검색어를 포함한 새로운 URL로 이동
+    location.href = `board?cno=${cno}&page=1&key=${key}&keyword=${keyword}`;
+};
 
 
+/*
+// [1] 게시물 전체 조회 요청 함수
+const getURLParams = () => {
+    const urlParams = new URLSearchParams(location.search);
+    return {
+        cno: urlParams.get('cno') || 1,  // Default to category 1
+        page: urlParams.get('page') || 1, // Default to page 1
+        key: urlParams.get('key') || '', // Default to empty string
+        keyword: urlParams.get('keyword') || '' // Default to empty string
+    };
+};
+
+const findAll = () => {
+    const { cno, page, key, keyword } = getURLParams();
+
+    // 2. Fetch options
+    const option = { method: 'GET' };
+    // 3. Request Data from API
+    fetch(`/board/findall.do?cno=${cno}&page=${page}&key=${key}&keyword=${keyword}`, option)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            renderBoardList(data.data);
+            renderPagination(data, cno, key, keyword);
+        })
+        .catch(console.log);
+};
+
+const renderBoardList = (boardList) => {
+    const tbody = document.querySelector('tbody');
+    tbody.innerHTML = boardList.map(board => `
+        <tr>
+            <td>${board.bno}</td>
+            <td><a href="/board/view?bno=${board.bno}">${board.btitle}</a></td>
+            <td>${board.mid}</td>
+            <td>${board.bview}</td>
+            <td>${board.cdate}</td>
+        </tr>
+    `).join('');
+};
+
+const renderPagination = (response, cno, key, keyword) => {
+    const { page, totalpage, startbtn, endbtn } = response;
+    const pagebox = document.querySelector('.pagebox');
+
+    let html = `
+        <li class="page-item">
+            <a class="page-link" href="/board?cno=${cno}&page=${Math.max(page - 1, 1)}&key=${key}&keyword=${keyword}">이전</a>
+        </li>
+    `;
+
+    for (let i = startbtn; i <= endbtn; i++) {
+        html += `
+            <li class="page-item ${page === i ? 'active' : ''}">
+                <a class="page-link" href="/board?cno=${cno}&page=${i}&key=${key}&keyword=${keyword}">${i}</a>
+            </li>
+        `;
+    }
+
+    html += `
+        <li class="page-item">
+            <a class="page-link" href="/board?cno=${cno}&page=${Math.min(page + 1, totalpage)}&key=${key}&keyword=${keyword}">다음</a>
+        </li>
+    `;
+
+    pagebox.innerHTML = html;
+};
+
+// [2] 검색 함수
+const onSearch = () => {
+    const key = document.querySelector('.key').value;
+    const keyword = document.querySelector('.keyword').value;
+    const cno = getURLParams().cno; // Maintain current category
+
+    // Redirect with new search params
+    location.href = `/board?cno=${cno}&page=1&key=${key}&keyword=${keyword}`;
+};
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', findAll);
+
+
+*/
 
 
 
