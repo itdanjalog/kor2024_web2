@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div th:replace = "~{ /header.html :: header }"></div>
+    <div class="container">
+        <h3> 부평구 인구 현황 </h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th> 동별 </th> <th> 세대수 </th>
+                    <th> 인구수(계)</th> <th>인구수(남)</th> <th>인구수(여)</th>
+                </tr>
+            </thead>
+            <tbody id="boardTable1">
+
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/js/api/api1.js"></script>
+
+</body>
+</html>
