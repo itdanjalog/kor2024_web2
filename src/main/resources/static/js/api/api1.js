@@ -1,4 +1,32 @@
 console.log( 'api.js open' )
+// [2] 사업자 상태 조회 요청 함수
+const api2 = ( ) => {
+    // 1. 입력받은 데이터(사업자번호) 가져오기
+    const 사업자번호입력상자 = document.querySelector('#사업자번호입력상자')
+    const 사업자번호 = 사업자번호입력상자.value;
+    // 2. 요청 자료 만들기 // 입력받은 사업자번호를 api 요청 형식에 맞게 구성
+    const data = { "b_no" : [ 사업자번호.replaceAll('-','') ] } // 사업자번호에 '-' 있을경우 불가능하므로 replace 함수 이용하여 '-' 제거.
+    // 3. url
+    const url = 'https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey='
+    // 4. 서비스 키 , 일반 인증키(Encoding)
+    const serviceKey = 'nwPZ%2F9Z3sVtcxGNXxOZfOXwnivybRXYmyoIDyvU%2BVDssxywHNMU2tA55Xa8zvHWK0bninVkiuZAA4550BDqIbQ%3D%3D'
+    // 5. fetch 이용한 API 요청
+    const option = {
+        method: 'POST' ,
+        headers : { 'Content-Type' : 'application/json' },
+        body : JSON.stringify( data )
+    }
+    fetch( url+serviceKey , option )
+        .then( r => r.json() )
+        .then( responseData => {
+            console.log( responseData  )
+            // 6. 만약에 요청 성공시 응답 자료 의 결과를 HTML 에 출력하기.
+            const 결과구역 = document.querySelector('#결과구역')
+            let html = responseData.data[0].tax_type
+            결과구역.innerHTML = html
+        })
+        .catch( e => { console.log(e); } )
+} // f end
 
 // [1] 부평구 인구 현황 요청 함수
 const api1 = ( ) => {
