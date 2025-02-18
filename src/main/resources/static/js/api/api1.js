@@ -31,7 +31,7 @@ const api2 = ( ) => {
 // [1] 부평구 인구 현황 요청 함수
 const api1 = ( ) => {
     // 1. 요청할 API URL
-    const url = 'https://api.odcloud.kr/api/3044322/v1/uddi:466eee86-a8be-447b-9c8e-802bdbe897d7?page=1&perPage=23&serviceKey='
+    const url = 'https://api.odcloud.kr/api/3044322/v1/uddi:466eee86-a8be-447b-9c8e-802bdbe897d7?page=1&perPage=22&serviceKey='
     // 2. 요청할 API 인증 KEY , 개별 발급
     const serviceKey = 'nwPZ%2F9Z3sVtcxGNXxOZfOXwnivybRXYmyoIDyvU%2BVDssxywHNMU2tA55Xa8zvHWK0bninVkiuZAA4550BDqIbQ%3D%3D'
     // 3. fetch 이용한 API 통신
@@ -50,7 +50,7 @@ const api1 = ( ) => {
                 html +=`<tr>
                             <td> ${ obj['동별'] } </td>
                             <td> ${ obj['세대수'] } </td>
-                            <td> ${ obj['인구수(계)'] } </td>
+                            <td> ${ obj['인구수(계)'].toLocaleString()  } </td>
                             <td> ${ obj['인구수(남)'] } </td>
                             <td> ${ obj['인구수(여)'] } </td>
                         </tr>`
