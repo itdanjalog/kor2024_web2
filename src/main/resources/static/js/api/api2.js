@@ -1,10 +1,12 @@
 console.log( 'api2.js open' ) // 부평역 좌표 : 37.4895528 , 126.723325411
+// Geolocation API : 접속한 클라이언트의 IP로 접속 위치 좌표 찾기.
+
 // [5] 마커 클러스터러 사용하기 + 공공데이터API + 부트스트랩 :  https://apis.map.kakao.com/web/sample/basicClusterer/
 // + 클러스터러 사용시 html js 앱키 뒤에 &libraries=clusterer
 
 // (1) 지도의 중심좌표 와 지도확대 레벨 초기 설정하고 지도를 표시할 div(dom) 가져오는 코드.
 var map = new kakao.maps.Map(document.getElementById('map'), { // 지도를 표시할 div
-    center : new kakao.maps.LatLng(36.2683, 127.6358), // 지도의 중심좌표
+    center : new kakao.maps.LatLng( 37.4895528 , 126.723325411 ), // 지도의 중심좌표
     level : 10 // 지도의 확대 레벨
 });
 // (2) 마커 클러스터 객체 생성 : 클러스터란? 마커 주변에 근처에 마커들이 있을때 집합 아이콘
@@ -18,13 +20,36 @@ var clusterer = new kakao.maps.MarkerClusterer({
 const url = 'https://api.odcloud.kr/api/15051492/v1/uddi:852bbc11-63ed-493e-ab09-caaaf54fd144?page=1&perPage=35&serviceKey=nwPZ%2F9Z3sVtcxGNXxOZfOXwnivybRXYmyoIDyvU%2BVDssxywHNMU2tA55Xa8zvHWK0bninVkiuZAA4550BDqIbQ%3D%3D'
 fetch( url )
     .then( r => r.json() )
-    .then( responseData => { console.log( responseData ) })
+    .then( responseData => { console.log( responseData )
+        // responseData = { data : [ {약국정보},{약국정보},{약국정보},{약국정보} ]  }
+        // (4) 응답 받은 자료로 마커 만들기
+        // 반복문 : 1.for문 2.forEach 3. map
+
+    })
     .catch( e => { console.log(e); })
 
 
 
+        // 2. forEach
+//        let markers = [];
+//        responseData.data.forEach( data => {
+//            let marker = new kakao.maps.Marker({position : new kakao.maps.LatLng( data.위도, data.경도 )}); // 마커 생성
+//            markers.push( marker ); // 생성한 마커를 마커목록 넣어준다.
+//        }) // for end
+//        clusterer.addMarkers( markers );
 
-
+        // 1. for문
+//        let markers = []; // 마커목록 선언 , 마커목록을 추후에 클라스터 넣을예정
+//        for( let index = 0 ; index <= responseData.data.length - 1 ; index++ ){
+//            // 2. 응답받은 자료의 data목록에서 index번째 약국 객체 가져오기
+//            let data = responseData.data[index];
+//            // 3. 마커 생성 , index번째 약국의 위도 , 경도 정보를 마커에 대입한다.
+//            let marker = new kakao.maps.Marker({position : new kakao.maps.LatLng( data.위도, data.경도 )});
+//            // 4. 생성한 마커를 마커목록/리스트에 넣어준다.
+//            markers.push( marker );
+//        } // for end
+//        // 5. 마커목록/리스트 를 클러스트에 추가합니다.
+//        clusterer.addMarkers( markers );
 
 
 
