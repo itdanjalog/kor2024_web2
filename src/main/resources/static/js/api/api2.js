@@ -1,6 +1,40 @@
 console.log( 'api2.js open' ) // 부평역 좌표 : 37.4895528 , 126.723325411
+// [5] 마커 클러스터러 사용하기 + 공공데이터API + 부트스트랩 :  https://apis.map.kakao.com/web/sample/basicClusterer/
+// + 클러스터러 사용시 html js 앱키 뒤에 &libraries=clusterer
+
+// (1) 지도의 중심좌표 와 지도확대 레벨 초기 설정하고 지도를 표시할 div(dom) 가져오는 코드.
+var map = new kakao.maps.Map(document.getElementById('map'), { // 지도를 표시할 div
+    center : new kakao.maps.LatLng(36.2683, 127.6358), // 지도의 중심좌표
+    level : 10 // 지도의 확대 레벨
+});
+// (2) 마커 클러스터 객체 생성 : 클러스터란? 마커 주변에 근처에 마커들이 있을때 집합 아이콘
+var clusterer = new kakao.maps.MarkerClusterer({
+    map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+    averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+    minLevel: 10 // 클러스터 할 최소 지도 레벨
+});
+// (3) 공식문서에는 jquery Ajax 사용하지만 , 강의에서는 fetch 이용한 자료 가져오기.
+// 공공데이터의 자료 ()요청 , 공공데이터 포털( 인천광역시 동구 약국 현황 ) : https://www.data.go.kr/data/15051492/fileData.do
+const url = 'https://api.odcloud.kr/api/15051492/v1/uddi:852bbc11-63ed-493e-ab09-caaaf54fd144?page=1&perPage=35&serviceKey=nwPZ%2F9Z3sVtcxGNXxOZfOXwnivybRXYmyoIDyvU%2BVDssxywHNMU2tA55Xa8zvHWK0bninVkiuZAA4550BDqIbQ%3D%3D'
+fetch( url )
+    .then( r => r.json() )
+    .then( responseData => { console.log( responseData ) })
+    .catch( e => { console.log(e); })
+
+
+
+
+
+
+
+
+
+
+
+
 
 // [4] 여러개 마커 표시하기 : https://apis.map.kakao.com/web/sample/multipleMarkerImage/
+/*
     // (1) 지도를 출력할 DOM 객체 가져온다.
 var mapContainer = document.querySelector('#map'), // 지도를 표시할 div
     // (2) 지도를 출력하기 전에 옵션[ 지도의 중심좌표-위도/경도 , Level(확대0~14축소) ] 정보 설정
@@ -36,6 +70,7 @@ for (var i = 0; i < positions.length; i ++) {
         image : markerImage // 마커 이미지
     });
 }
+*/
 
 // [3] 마커에 클릭 이벤트 등록하기 : https://apis.map.kakao.com/web/sample/addMarkerClickEvent/
 /*
