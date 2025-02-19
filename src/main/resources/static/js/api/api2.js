@@ -29,8 +29,14 @@ fetch( url ).then( r => r.json() ).then( responseData => { console.log( response
             // * 각 마커에 클릭 이벤트 등록한다.
             // kakao.maps.event.addListener( marker , 'click' , function(){ })
             kakao.maps.event.addListener( marker , 'click' , () => {
-                alert( `${ data.약국명 } 클릭 했군. `);
+                // alert( `${ data.약국명 } 클릭 했군. `);
                 // + 부트스트랩의 '오프캔버스' : https://getbootstrap.kr/docs/5.3/components/offcanvas/
+                // 클릭한 마커의 약국 정보를 사이드바(div) html에 값 대입하기
+                document.querySelector('.약국명').innerHTML = data.약국명;
+                document.querySelector('.전화번호').innerHTML = data.전화번호;
+                document.querySelector('.주소').innerHTML = data.소재지도로명주소;
+                // + 부트스트랩의 '오프캔버스' 실행 버튼 클릭이벤트
+                document.querySelector('.사이드바버튼').click(); // JS에서 특정한 버튼 강제로 클릭하기.
             })
             // 2. forEach 와 다르게 map은 return를 사용 할 수 있다. return 값은 새로운배열에 대입된다.
             // 반복문에서 return된 marker 는 markers 배열에 대입된다. 즉 push 생략
@@ -38,7 +44,6 @@ fetch( url ).then( r => r.json() ).then( responseData => { console.log( response
         })
         // 3. markers 를 클러스터에 대입한다.
         clusterer.addMarkers( markers );
-
     })
     .catch( e => { console.log(e); })
 
