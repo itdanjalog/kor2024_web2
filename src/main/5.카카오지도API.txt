@@ -3,7 +3,7 @@
     2. [web] 클릭
     3. 사이드바 [Guide] 클릭
         1. 카카오 개발자사이트 (https://developers.kakao.com) 접속
-        2. [로그인] * 계정이 없다면 강사 appkey 사용하기.  : 1ac4a57d8a5927d34020a891fcdbbcbd
+        2. [로그인] * 계정이 없다면 강사 appkey 사용하기.  (강사)JavaScript 키 : 1ac4a57d8a5927d34020a891fcdbbcbd
         3. 상단 메뉴 [ 내 애플리케이션 ] 클릭
             + 내 애플리케이션 추가
                 1. 앱 이름 : 아무거나(임의) , kor2024web2
@@ -13,7 +13,7 @@
                 [저장]
         4. 추가된 '애플리케이션명' 클릭 해서 들어가기
     4. 사이드바 메뉴
-        [앱키] JavaScript 키 확인.
+        [앱키] JavaScript  키 확인.
         [플랫폼]
             1. [Web 플랫폼 등록] 클릭
             2. 기본 도메인인 'http://localhost:8080' 입력후 저장
