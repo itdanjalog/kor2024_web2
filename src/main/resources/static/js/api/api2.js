@@ -1,6 +1,44 @@
 console.log( 'api2.js open' ) // 부평역 좌표 : 37.4895528 , 126.723325411
 
+// [4] 여러개 마커 표시하기 : https://apis.map.kakao.com/web/sample/multipleMarkerImage/
+    // (1) 지도를 출력할 DOM 객체 가져온다.
+var mapContainer = document.querySelector('#map'), // 지도를 표시할 div
+    // (2) 지도를 출력하기 전에 옵션[ 지도의 중심좌표-위도/경도 , Level(확대0~14축소) ] 정보 설정
+    mapOption = {
+        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+        level: 8 // 지도의 확대 레벨
+    };
+    // (3) 지도객체 를 생성한다.
+var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+// 마커를 표시할 위치와 title 객체 배열입니다
+    // (4) 지도객체에 출력할 마크업들의 정보( 마크업 제목 , 마크업 위치 : LatLng( 위도 , 경도 ) )
+    // + 데이터베이스에 저장된 위도/경도 여러개를 여러마커로 표시할 수 있다.
+var positions = [
+    { title: '카카오',latlng: new kakao.maps.LatLng(33.450705, 126.570677) },
+    { title: '생태연못',  latlng: new kakao.maps.LatLng(33.450936, 126.569477) },
+    { title: '텃밭', latlng: new kakao.maps.LatLng(33.450879, 126.569940) },
+    { title: '근린공원', latlng: new kakao.maps.LatLng(33.451393, 126.570738)},
+    { title : '부평역' , latlng : new kakao.maps.LatLng( 37.4895528 , 126.723325411 ) }
+];
+// 마커 이미지의 이미지 주소입니다
+    // (5) 마커의 이미지는 배포된 HTTP 의 이미지가 위치한 경로
+var imageSrc = "http://localhost:8080/img/logo.png";
+for (var i = 0; i < positions.length; i ++) {
+    // 마커 이미지의 이미지 크기 입니다
+    var imageSize = new kakao.maps.Size(24, 35);
+    // 마커 이미지를 생성합니다
+    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+        map: map, // 마커를 표시할 지도
+        position: positions[i].latlng, // 마커를 표시할 위치
+        title : positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+        image : markerImage // 마커 이미지
+    });
+}
+
 // [3] 마커에 클릭 이벤트 등록하기 : https://apis.map.kakao.com/web/sample/addMarkerClickEvent/
+/*
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div
     mapOption = {
         center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
@@ -41,6 +79,7 @@ kakao.maps.event.addListener(marker, 'click', function() {
       // 마커 위에 인포윈도우를 표시합니다
       // infowindow.open(map, marker);
 });
+*/
 
 // [2] 클릭한 위치에 마커 표시하기. : https://apis.map.kakao.com/web/sample/addMapClickEventWithMarker/
 /*
