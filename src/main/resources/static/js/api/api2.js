@@ -13,21 +13,45 @@ var map = new kakao.maps.Map(document.getElementById('map'), { // 지도를 표�
 var clusterer = new kakao.maps.MarkerClusterer({
     map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
     averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
-    minLevel: 10 // 클러스터 할 최소 지도 레벨
+    minLevel: 5 // 클러스터 할 최소 지도 레벨
 });
 // (3) 공식문서에는 jquery Ajax 사용하지만 , 강의에서는 fetch 이용한 자료 가져오기.
 // 공공데이터의 자료 ()요청 , 공공데이터 포털( 인천광역시 동구 약국 현황 ) : https://www.data.go.kr/data/15051492/fileData.do
 const url = 'https://api.odcloud.kr/api/15051492/v1/uddi:852bbc11-63ed-493e-ab09-caaaf54fd144?page=1&perPage=35&serviceKey=nwPZ%2F9Z3sVtcxGNXxOZfOXwnivybRXYmyoIDyvU%2BVDssxywHNMU2tA55Xa8zvHWK0bninVkiuZAA4550BDqIbQ%3D%3D'
-fetch( url )
-    .then( r => r.json() )
-    .then( responseData => { console.log( responseData )
+fetch( url ).then( r => r.json() ).then( responseData => { console.log( responseData )
         // responseData = { data : [ {약국정보},{약국정보},{약국정보},{약국정보} ]  }
         // (4) 응답 받은 자료로 마커 만들기
         // 반복문 : 1.for문 2.forEach 3. map
+        // 3. map
+        let markers = responseData.data.map( data => {
+            // 1. 마커 생성한다.
+            let marker = new kakao.maps.Marker({position : new kakao.maps.LatLng( data.위도, data.경도 )}); // 마커 생성
+            // * 각 마커에 클릭 이벤트 등록한다.
+            // kakao.maps.event.addListener( marker , 'click' , function(){ })
+            kakao.maps.event.addListener( marker , 'click' , () => {
+                alert( `${ data.약국명 } 클릭 했군. `);
+                // + 부트스트랩의 '오프캔버스' : https://getbootstrap.kr/docs/5.3/components/offcanvas/
+            })
+            // 2. forEach 와 다르게 map은 return를 사용 할 수 있다. return 값은 새로운배열에 대입된다.
+            // 반복문에서 return된 marker 는 markers 배열에 대입된다. 즉 push 생략
+            return marker;
+        })
+        // 3. markers 를 클러스터에 대입한다.
+        clusterer.addMarkers( markers );
 
     })
     .catch( e => { console.log(e); })
 
+
+//        // 3. map
+//        let markers = responseData.data.map( data => {
+//            // 1. 마커 생성한다.
+//            let marker = new kakao.maps.Marker({position : new kakao.maps.LatLng( data.위도, data.경도 )}); // 마커 생성
+//            // 2. forEach 와 다르게 map은 return를 사용 할 수 있다. return 값은 새로운배열에 대입된다.
+//            // 반복문에서 return된 marker 는 markers 배열에 대입된다. 즉 push 생략
+//            return marker;
+//        })
+//        clusterer.addMarkers( markers );
 
 
         // 2. forEach
