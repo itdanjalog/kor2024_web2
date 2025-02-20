@@ -31,12 +31,42 @@
         * HTTP 와 다른점 : 웹소켓은 (서버-클라이언트) 서로 연결된 구조 이므로 요청이 없어도 서로 양방향 통신이 가능하다.
 
     6. 구현
-    [ JS 클라이언트 소켓 구현 ]
-
-
-
+    [ JS 클라이언트 소켓 구현 ] JS 내장 클래스인 WebSocket
+        1. JS에 new WebSocket('서버소켓주소') 이용한 소켓 생성한다.
+        2. 주요 속성과 함수들
+            .onopen( event ) => { 서버소켓과 접속 성공시 로직 구현 };
+            .onclose( event ) => { 서버소켓과 접속 닫혔을때 로직 구현};
+            .onmerror( event ) => { 서버소켓과 에러가 발생했을떄 로직 구현};
+            .onmessage( event ) => { 서버소켓으로부터 메시지를 받았을때 로직 구현};
+            * event : 해당하는 이벤트의 정보가 들어있는 객체
+            .send( );   : 텍스트만 전송이 가능하다.
 
     [ JAVA(Spring) 서버 소켓 구현 ]
+        1. 그레이들에 webSocket 라이브러리 등록한다.
+            implementation 'org.springframework.boot:spring-boot-starter-websocket'
+        2. 스프링 컨테이너에 웹소켓 주소 매핑 등록한다.
+            * 특정한 클래스를 만들어서 아래와 같이 웹 서버소켓 매핑 주소 등록
+            1. 클래스명 implements WebSocketConfigurer{ }
+            2. 추상메소드 구현하기
+                * 자동완성 : register + 엔터
+
+@Configuration
+@EnableWebSocket
+public class WebSocketConfig implements WebSocketConfigurer {
+
+    @Autowired private 서버소켓클래스명 변수명;
+
+    // [*] WebSocketConfigurer 인터페이스의 추상메소드로 웹소켓 주소를 매핑하는 함수
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+    //registry.addHandler( 매핑할클래스변수명 , "서버소켓주소정의");
+
+    registry.addHandler(  변수명, "/chat");
+
+    } // f end
+
+} // c end
+
 
 
 
