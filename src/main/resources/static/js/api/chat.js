@@ -1,7 +1,7 @@
 console.log( 'chat.js open' )
 
 // [1] 클라이언트 웹소켓 생성
-const clientSocket = new WebSocket( 'ws://localhost:8080/chat1' )
+const clientSocket = new WebSocket( 'ws://localhost:8080/chat' )
 console.log( clientSocket );
 
 // [2] 클라이언트 웹소켓 속성

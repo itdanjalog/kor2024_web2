@@ -47,25 +47,43 @@
         2. 스프링 컨테이너에 웹소켓 주소 매핑 등록한다.
             * 특정한 클래스를 만들어서 아래와 같이 웹 서버소켓 매핑 주소 등록
             1. 클래스명 implements WebSocketConfigurer{ }
-            2. 추상메소드 구현하기
+            2. 서버소켓을 매핑 주소 만들기 위한. 추상메소드 구현하기
                 * 자동완성 : register + 엔터
 
-@Configuration
-@EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+                @Configuration
+                @EnableWebSocket
+                public class WebSocketConfig implements WebSocketConfigurer {
 
-    @Autowired private 서버소켓클래스명 변수명;
+                    @Autowired private 서버소켓클래스명 변수명;
 
-    // [*] WebSocketConfigurer 인터페이스의 추상메소드로 웹소켓 주소를 매핑하는 함수
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-    //registry.addHandler( 매핑할클래스변수명 , "서버소켓주소정의");
+                    // [*] WebSocketConfigurer 인터페이스의 추상메소드로 웹소켓 주소를 매핑하는 함수
+                    @Override
+                    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+                        //registry.addHandler( 매핑할클래스변수명 , "서버소켓주소정의");
+                    registry.addHandler(  변수명, "/chat");
+                    } // f end
+                } // c end
 
-    registry.addHandler(  변수명, "/chat");
+            3.  서버소켓을 아래와 같이 로현
+                    [*] TextWebSocketHandler 클래스로부터 상속받은 하위 클래스는 서버소켓의 다양한 메소드를 상속 받을수 있다.
+                        -> 상속받은 메소드들을 오버라이딩(재정의) 통해 각 기능별 로직 구현한다.
 
-    } // f end
+                    @Component // 현재 클래스를 빈(객체) 등록한다.
+                    public class ChatServerSocket extends TextWebSocketHandler {
 
-} // c end
+                        @Override
+                        public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+                            System.out.println("클라이언트가 서버에게 접속 요청 한다.");
+                        } //  f end
+
+                    } // f end
+
+            4. TextWebSocketHandler 클래스의 주요 메소드
+                    (1) afterConnectionEstablished()    :
+                    (2) afterConnectionClosed()         :
+                    (3) handleTextMessage()             :
+
+
 
 
 
