@@ -20,11 +20,11 @@
     padding : 10px;
     display : inline-block;
     font-size : 18px;
+    margin: 0px 0px 20px 2px;
 }
 .date{
     font-size : 8px;
-    background-color : #a9bdce;
-    text-align : center
+    text-align : center;
     padding : 10px;
     margin = 0 auto;
     width : 100px;
@@ -43,10 +43,10 @@
 .alarm{
     background-color : #a9bdce;
     text-align : center;
-    font-size : 10px;
+    font-size : 11px;
     padding : 5px;
     width : 400px;
-    margin : 0 auto;
+    margin : 10px auto;
 }
 /* 입력상자 */
 .bottomBox{

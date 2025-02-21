@@ -69,13 +69,32 @@ clientSocket.onmessage =( event ) => {
                                      </div>`
         } // if end
     } // if end
+
+    // + 메시지를 표시하고 만약에 스크롤이 메시지보다 위에 존재하면 스크롤을 최하단으로 내리기
+        // scrollTop : 스크롤바의 상단 위치
+        // scrollHeight : 스크롤의 전체 길이
+        // scrollTop = scrollHeight : 상단 위치를 가장 하단으로 대입 한다는 뜻
+    채팅내용구역.scrollTop = 채팅내용구역.scrollHeight;
+
 } // f end
+
+// [3-2] 만약에 입력상자에서 엔터 키 를 눌렀을때 메시지 전송
+// onkeyup : 키보드 키를 누르고 떼었을때 이벤트
+const enterKey = ( ) => {
+    // 만약에 엔터 키를 눌렀을떄
+    if( window.event.keyCode == 13 ){// C[대문자] 키보드 각 키들은 code 번호가 존재한다. 참조 : https://blog.naver.com/duddnddl9/220476368161
+        // 13 == Enter key
+        메시지전송();
+    }
+}
 
 // [3] 서버에게 메시지 보내기
 const 메시지전송 = ( ) =>{
     // 1. 입력받은 값을 가져온다.
     const 메시지작성구역 = document.querySelector('.메시지작성구역');
     const 메시지 = 메시지작성구역.value;
+        // * 만약에 메시지가 비어 있으면 함수 강제 종료
+        if( 메시지 == '' ){ return; }
 
     // (3) 메시지를 구성한다. type : 메시지분류 , message : 메시지내용 , from : 보내는사람  , date : 현재날짜/시간
     let msg = { type : 'msg' , message : 메시지 , from : nickName , date : new Date().toLocaleString() }
