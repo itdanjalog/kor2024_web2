@@ -10,8 +10,10 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Configuration // 해당 클래스를 스프링 컨테이너 빈(객체) 등록
 @EnableWebSocket // 웹 소켓를 스프링 컨테이너 빈(객체) 등록
 public class WebSocketConfig implements WebSocketConfigurer {
+
     // [*] 서버소켓 역할을 하는 컨트롤러 클래스/객체 생성
     @Autowired private ChatServerSocket chatServerSocket;
+
     // [*] WebSocketConfigurer 인터페이스의 추상메소드로 웹소켓 주소를 매핑하는 함수
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

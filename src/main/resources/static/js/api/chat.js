@@ -1,5 +1,12 @@
 console.log( 'chat.js open' )
 
+// --- 비회원제 익명 채팅 ---- //
+// (1) 익명 아이디 만들어주기.
+    // Math.random() : 0 ~ 1 사이의 난수 생성 함수.
+    // ( Math.random() * 끝값 ) + 시작값 : 1 부터 끝값 전까지 사이의 난수
+let randomId = Math.floor( Math.random() * 1001 ) +1 // 1 ~ 1000 사이 난수
+let nickName = `익명${randomId}`;
+
 // [1] 클라이언트 웹소켓 생성
 const clientSocket = new WebSocket( 'ws://localhost:8080/socket/server' )
 //console.log( clientSocket );
@@ -8,7 +15,12 @@ const clientSocket = new WebSocket( 'ws://localhost:8080/socket/server' )
 // 1. 만약에 클라이언트 웹소켓이 서버소켓과 연결을 성공 했을때 실행되는 함수 구현
 clientSocket.onopen = ( event ) => {
     console.log( '서버소켓에 연동 성공했다.!!!')
-}
+    // (2) 클라이언트소켓이 서버소켓에 접속했을때
+    // type : 메시지의종류  , message : 메시지의본문내용
+    let msg  = { 'type' : 'alarm' , 'message' : `${ nickName }님이 입장 했습니다.` }
+    // 소켓은 문자열만 전송이 가능 하므로 JSON.stringify() 이용한 문자열타입으로 전송하기.
+    clientSocket.send( JSON.stringify( msg ) );
+} // f end
 
 // 2. 만약에 클라이언트 웹소켓이 서버소켓과 연결이 닫았을때 실행되는 함수 구현
 clientSocket.onclose = ( event ) => {
@@ -39,8 +51,12 @@ const 메시지전송 = ( ) =>{
     // 1. 입력받은 값을 가져온다.
     const 메시지작성구역 = document.querySelector('.메시지작성구역');
     const 메시지 = 메시지작성구역.value;
+
+    // (3) 메시지를 구성한다. type : 메시지분류 , message : 메시지내용 , from : 보내는사람  , date : 현재날짜/시간
+    let msg = { type : 'msg' , message : 메시지 , from : nickName , date : new Date().toLocaleString() }
+
     // 2. 클라이언트 웹소켓 객체의 .sned() 함수 이용한 서버에게 메시지 전송
-    clientSocket.send( 메시지 );
+    clientSocket.send( JSON.stringify( msg ) );
     // 3. 전송후 입력상자 (공백으로) 초기화
     메시지작성구역.value = '';
 }
