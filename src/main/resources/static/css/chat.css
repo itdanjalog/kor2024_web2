@@ -15,9 +15,9 @@
     text-align : left;  /* 가로 정렬 */
 }
 .content{
-    background-color : #ffffff; // 흰색 배경
-    border-radius : 10px ; // 둥긑모서리
-    padding : 10px; // 안쪽 여백
+    background-color : #ffffff;
+    border-radius : 10px ;
+    padding : 10px;
     display : inline-block;
     font-size : 18px;
 }
@@ -34,11 +34,40 @@
      width : 50px;
      height : 50px;
      border-radius : 30px;
-     object-fit : cover; // 비율 유지
+     object-fit : cover;
 }
 .receiveBox{
     display : flex;
 }
+/* 알람 */
+.alarm{
+    background-color : #a9bdce;
+    text-align : center;
+    font-size : 10px;
+    padding : 5px;
+    width : 400px;
+    margin : 0 auto;
+}
+/* 입력상자 */
+.bottomBox{
+    display : flex;
+    margin-bottom : 100px;
+}
+.메시지작성구역{
+    width : 90%;
+    padding : 10px;
+}
+/* 전송 버튼 */
+.bottomBox > button{
+    width : 10%;
+    background-color : #ffeb33;
+    border : none;
+}
+
+
+
+
+
 
 
 

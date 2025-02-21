@@ -38,13 +38,38 @@ clientSocket.onmessage =( event ) => {
     // [4] 서버로 부터 클라이언트가 메시지를 받았을때
     console.log( event ); // 받은 메시지 통신 정보 객체
     console.log( event.data ); // 받은 메시지 본문
-    // (1) 받은 메시지 꺼내기
-    const message = event.data;
+    // (1) 받은 메시지 꺼내서 JSON으로 타입 변환 , JSON.parse("문자열") : 문자열-->JSON 변환 함수
+    const message = JSON.parse( event.data ) ;
+
     // (2) 특정한 위치에 받은 메시지 출력하기 , += 하는 이유는 메시지를 누적하기 위해서
     const 채팅내용구역 = document.querySelector('.채팅내용구역');
-    채팅내용구역.innerHTML += `<div> ${ message } </div>`;
 
-}
+    if( message.type == 'alarm' ){ // 만약에 메시지의 타입이 알람이면
+        채팅내용구역.innerHTML += `<div class="alarm">
+                                    <span> ${ message.message } </span>
+                                 </div>`
+    }else if( message.type == 'msg' ){ // 만약에 메시지의 타입이 메시지 이면
+        if( message.from == nickName ){ // 메시지의 보낸사람이 현재 nickName 같다면 ( 내가 보낸 메시지 )
+            채팅내용구역.innerHTML += `<div class="secontent">
+                                         <span class="date"> ${ message.date } </span>
+                                         <span class="content"> ${ message.message } </span>
+                                     </div>`
+        }else{ // (남이 보낸 메시지)
+            채팅내용구역.innerHTML += `<div class="receiveBox">
+                                         <div class="profileImg">
+                                             <img  src="/img/default.jpg"/>
+                                         </div>
+                                         <div>
+                                             <div class="recontent">
+                                                 <div class="memberNic"> ${ message.from } </div>
+                                                 <span class="content"> ${ message.message } </span>
+                                                 <span class="date"> ${ message.date } </span>
+                                             </div>
+                                         </div>
+                                     </div>`
+        } // if end
+    } // if end
+} // f end
 
 // [3] 서버에게 메시지 보내기
 const 메시지전송 = ( ) =>{
