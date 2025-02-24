@@ -53,6 +53,13 @@
                     boolean ===>> sql 처리 성공 여부 반환
                     List< DTO > ===>> sql 처리 결과 자동으로 DTO 반환
 
+            4. 추상메소드 위에
+                1. @Insert( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
+                2. @Select( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
+                3. @Update( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
+                4. @Delete( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
+
+
 
 
 
