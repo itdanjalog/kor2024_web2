@@ -32,6 +32,15 @@ public class ProductController {
     public ProductDto find(@RequestParam int id ){
         return productService.find( id );
     }
+    // [4] 제품 개별 수정
+    @PutMapping("/product/update.do")
+    // [PUT] http://localhost:8080/product/update.do
+    // [BODY] { "id" : "1", "name" : "사이다" , "price" : "1200" }
+    public boolean update( @RequestBody ProductDto productDto ){
+        return productService.update( productDto );
+    }
+
+    // [5] 제품 개별 삭제
 
 } // c end
 

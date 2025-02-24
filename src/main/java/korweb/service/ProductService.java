@@ -26,6 +26,10 @@ public class ProductService {
     public ProductDto find( int id ){
         return productMapper.find( id );
     }
+    // [4] 제품 개별 수정
+    public boolean update( ProductDto productDto ){
+        return productMapper.update( productDto );
+    }
 
 
 }

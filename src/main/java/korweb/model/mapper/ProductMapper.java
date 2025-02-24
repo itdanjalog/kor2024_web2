@@ -4,6 +4,7 @@ import korweb.model.dto.ProductDto;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -34,8 +35,16 @@ public interface ProductMapper { // [1] 인터페이스타입 선언
     // 조회결과를 자동으로 ProductDto 로 변환 해준다.
         // console프로젝트 Dao 에서 rs.next(); rs.getInt("id);
 
+    // (4) 제품 개별 수정  SQL 매핑
+    // Dao 방법 : update products set name = ? , price = ? where id = ?;
+    // myBatis 방법 : update products set name = #{ name } , price = #{ price } where id = #{ id }
+    @Update( " update products set name = #{ name } , price = #{ price } " +
+            " where id = #{ id } ")
+    boolean update( ProductDto productDto );
+    // * 반환타입이 boolean 이면 *자동* 으로 성공=true,실패=false 반환 한다.
 
-}
+
+} // class end
 
 
 
