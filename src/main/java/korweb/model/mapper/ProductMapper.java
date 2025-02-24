@@ -1,10 +1,7 @@
 package korweb.model.mapper;
 
 import korweb.model.dto.ProductDto;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -43,6 +40,9 @@ public interface ProductMapper { // [1] 인터페이스타입 선언
     boolean update( ProductDto productDto );
     // * 반환타입이 boolean 이면 *자동* 으로 성공=true,실패=false 반환 한다.
 
+    // (5) 제품 개별 삭제 SQL 매핑
+    @Delete( " delete from products where id = #{ id }")
+    boolean delete( int id );
 
 } // class end
 

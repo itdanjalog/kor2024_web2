@@ -31,6 +31,10 @@ public class ProductService {
         return productMapper.update( productDto );
     }
 
+    // [5] 제품 개별 삭제
+    public boolean delete( int id ){
+        return productMapper.delete( id );
+    }
 
 }
 

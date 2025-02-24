@@ -39,8 +39,13 @@ public class ProductController {
     public boolean update( @RequestBody ProductDto productDto ){
         return productService.update( productDto );
     }
-
     // [5] 제품 개별 삭제
+    @DeleteMapping("/product/delete.do")
+    // [DELETE] http://localhost:8080/product/delete.do?id=1
+    public boolean delete( @RequestParam int id  ){
+        return productService.delete( id );
+    }
+
 
 } // c end
 
