@@ -65,7 +65,7 @@
             4. 방법2) .xml 파일에 sql 작성하여 추상메소드 매핑 , 복잡한/재활용 query
                 * xml언어는 HTML 언어 와 동일하게 <>꺽은괄호(마크업) 언어
                     1.해당 파일의 버전과 인코딩 :
-                                <?xml version="1.0" encoding="utf-8" ?>
+                                <?xml version="1.0" encoding="utf-8" ?> : XML파일의 첫번째 줄에 작성한다.
                     2.myBatis 문법검사,유효성검사,자동완성 등등 :
                                 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
                                  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
