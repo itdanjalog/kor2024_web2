@@ -5,14 +5,29 @@ import korweb.model.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    // [1] 제품 등록 서비스
     public int save(ProductDto productDto){
         return productMapper.save( productDto );
     }
+
+    // [2] 제품 전체 조회 서비스
+    public List<ProductDto> findAll(){
+        return productMapper.findAll();
+    }
+
+    // [3] 제품 개별 조회 서비스
+    public ProductDto find( int id ){
+        return productMapper.find( id );
+    }
+
+
 }
 
 
