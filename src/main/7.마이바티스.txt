@@ -53,14 +53,30 @@
                     boolean ===>> sql 처리 성공 여부 반환
                     List< DTO > ===>> sql 처리 결과 자동으로 DTO 반환
 
-            4. 추상메소드 위에
+
+            ( 방법1 : SQL어노테이션 , 방법2 : XML 파일 ) 주의할점 : 동시에 2가지 방법으로 SQL 처리 할 수 없다.
+
+            4. 방법1) 추상메소드 위에 어노테이션 , 간단한 query
                 1. @Insert( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
                 2. @Select( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
                 3. @Update( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
                 4. @Delete( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
 
+            4. 방법2) .xml 파일에 sql 작성하여 추상메소드 매핑 , 복잡한/재활용 query
+                * xml언어는 HTML 언어 와 동일하게 <>꺽은괄호(마크업) 언어
+                    1.해당 파일의 버전과 인코딩 :
+                                <?xml version="1.0" encoding="utf-8" ?>
+                    2.myBatis 문법검사,유효성검사,자동완성 등등 :
+                                <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+                                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+                <mapper namespace="(1)매핑할 인터페이스 경로">
+                    <SQL마크업 id ="(2)매핑할 인터페이스의 추상메소드명">
+                    </SQL마크업>
+                </mapper>
 
+                (1) 매핑할 인터페이스 경로 : (src->main->java )이하부터 매핑할 인터페이스 경로
+                (2) 매핑할 인터페이스의 추상메소드명 : <mapper> 마크업에 설정한 경로의 인터페이스내 매핑할 추상메소드명
 
 
 
