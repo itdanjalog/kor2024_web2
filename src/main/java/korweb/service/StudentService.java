@@ -17,9 +17,15 @@ public class StudentService {
     // [1] 학생 점수 등록
     public int save(Map<String , Object> map ){
         System.out.println("StudentService.save");
+        // (1) insert 실행 전 map 매개변수
+        System.out.println("map = " + map); // sno 없다
+        // (*) insert 실행
+        int result = studentMapper.save( map );
+        // (2) insert 실행 후 map 매개변수
+        // sno 있다. save 처리 이후 자동으로 생성된 pk번호가 대입 되었다.
         System.out.println("map = " + map);
-        //return 1;
-        return studentMapper.save( map );
+        // -
+        return result;
     }
     // [2] 학생 전체 조회
     public List< Map<String,Object> > findAll(){

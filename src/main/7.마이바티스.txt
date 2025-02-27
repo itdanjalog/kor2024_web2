@@ -59,9 +59,12 @@
 
             4. 방법1) 추상메소드 위에 어노테이션 , 간단한 query
                 1. @Insert( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
+                    -> 자주 사용되는 추가 어노테이션
+                    @Options( useGeneratedKeys = true , keyProperty = "pk필드명") : insert 후 자동 생성된 pk값을 매개변수에 대입 해주는 어노테이션
                 2. @Select( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
                 3. @Update( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
                 4. @Delete( "SQL" ) : 해당 SQL이 insert 실행 매개변수와 결과값을 자바 객체로 자동 타입변환
+
 
             4. 방법2) .xml 파일에 sql 작성하여 추상메소드 매핑 , 복잡한/재활용 query
                 * xml언어는 HTML 언어 와 동일하게 <>꺽은괄호(마크업) 언어
