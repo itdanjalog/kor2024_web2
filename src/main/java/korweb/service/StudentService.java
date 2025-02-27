@@ -39,7 +39,7 @@ public class StudentService {
         return studentMapper.findStudentScores( minKor , minMath );
     }
 
-    // [4]
+    // [4] 여러명의 학생 등록
     public boolean saveAll( List< Map<String,Object>> list ){
         return studentMapper.saveAll( list );
     }
