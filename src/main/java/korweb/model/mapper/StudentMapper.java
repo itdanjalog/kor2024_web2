@@ -20,7 +20,46 @@ public interface StudentMapper {
     int save(Map<String,Object> map );
 
     // [2] 학생 전체 조회(추상)
-    @Select(" select * from student")
+    //@Select(" select * from student") // 정적 쿼리
+    @Select("<script> select * from student </script> ") // 동적쿼리
     List<Map<String,Object>> findAll();
 
-}
+    // [3] 특정한 점수 이상의 학생 조회 ( 동적 쿼리 표현 )
+    // @Select("동적쿼리")
+    // (1) JAVA15 이상 부터 (강의는17) """문자열""" 템플릿 지원 : 문자열 입력할때 다음줄로 이어지는 방법
+    /*
+        [JAVA15미만] String text = "안녕하세요"
+                                    +" 유재석입니다";   +더하기 연산자 이용한 문자열 연결
+        [JAVA15이상] String text = """ 안녕하세요
+                                       유재석입니다 """;  템플릿 이용한 문자열 연결  , JS : `백틱연산자
+     */
+    // (2) 1 = 1  : SQL 에서 강제로 true 가 필요할때 사용하는 방법 , 주로 다음 조건을 동적으로 처리 할 때 사용된다.
+    // 즉] 다음 조건이 있을수도 있고 없을수도 있을때
+    @Select(""" 
+            <script>
+            select * from student where 1 = 1
+                <if test = "minKor != null ">
+                    and kor >= #{ minKor }
+                </if>
+                <if test = "minMath != null ">
+                    and math >= #{ minMath }
+                </if>
+            </script>
+            """)
+    List< Map<String,Object>> findStudentScores(
+            int minKor , int minMath );
+    // minKor 가 80 이고 minMath 가 null 일때 : select * from student where 1 = 1 and kor >= 80
+    // minKor 가 없고 minMath 없을때 : select * from student where 1 = 1
+    // minKor 가 90 이고 minMath 가 70 일때 : select * from student where 1 = 1 and kor >= 90 and math >= 70
+
+} // i end
+
+
+
+
+
+
+
+
+
+

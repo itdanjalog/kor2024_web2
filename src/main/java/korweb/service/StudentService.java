@@ -34,4 +34,31 @@ public class StudentService {
         return studentMapper.findAll();
     }
 
+    // [3]
+    public List< Map<String,Object>> findStudentScores( int minKor , int minMath){
+        return studentMapper.findStudentScores( minKor , minMath );
+    }
+
+    // [4]
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

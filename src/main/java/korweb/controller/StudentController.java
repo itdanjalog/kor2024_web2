@@ -40,7 +40,22 @@ public class StudentController {
     }
 
     // [3] 특정한 점수 이상의 학생 조회
+    @GetMapping("/scores")
+    // [GET] http://localhost:8080/students/scores?minKor=90&minMath=80
+    public List< Map<String,Object>> findStudentScores(
+            @RequestParam int minKor , @RequestParam int minMath){
+        return studentService.findStudentScores( minKor, minMath );
+    }
 
     // [4] 여러명의 학생 등록
 
 }
+
+
+
+
+
+
+
+
+
