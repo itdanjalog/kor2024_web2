@@ -40,6 +40,9 @@ public class StudentService {
     }
 
     // [4]
+    public boolean saveAll( List< Map<String,Object>> list ){
+        return studentMapper.saveAll( list );
+    }
 
 }
 

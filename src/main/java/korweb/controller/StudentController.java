@@ -48,7 +48,12 @@ public class StudentController {
     }
 
     // [4] 여러명의 학생 등록
-
+    @PostMapping("/all")
+    // POST : http://localhost:8080/students/all
+    // BODY : [ { "name" : "유재석" , "kor" : "90" , "math" : "100" } , { "name" : "강호동" , "kor" : "80" , "math" : "70" } ]
+    public boolean saveAll( @RequestBody List<Map<String,Object>> list ){
+        return studentService.saveAll( list );
+    }
 }
 
 

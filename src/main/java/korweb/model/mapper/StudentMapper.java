@@ -52,6 +52,26 @@ public interface StudentMapper {
     // minKor 가 없고 minMath 없을때 : select * from student where 1 = 1
     // minKor 가 90 이고 minMath 가 70 일때 : select * from student where 1 = 1 and kor >= 90 and math >= 70
 
+    // [4] 여러명의 학생 한번에 등록하기 ( 배치 )
+    @Insert("""
+            <script>
+                insert into student( name , kor , math ) values 
+                <foreach collection="list" item="student" separator=",">
+                    ( #{ student.name } , #{ student.kor } , #{ student.math }  )
+                </foreach>
+            </script>
+            """)
+    boolean saveAll( List< Map<String,Object>> list );
+    /*
+        * SQL에서 레코드 삽입 방법
+            1. 레코드 1개 삽입 : insert into 테이블명( 필드명,필드명 ) values( 값1 , 값2 )
+            2. 레코드 여래개 삽입 : insert into 테이블명( 필드명,필드명 ) values( 값1 , 값2 ), ( 값3 , 값4 ) , ( 값5 , 값6 )
+        * list = [ { name="강호동" , kor =90 , math = 100 } , { name ="유재석" , kor = 100 , math = 80 } ] 가정일때
+            1. insert into student( name , kor , math ) values 반복되는SQL
+            2. insert into student( name , kor , math ) values ( '강호동' , 90 , 100 )
+            3. insert into student( name , kor , math ) values ( '강호동' , 90 , 100 ) , ( '유재석' , 100 , 80 )
+    */
+
 } // i end
 
 

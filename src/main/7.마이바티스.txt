@@ -74,11 +74,9 @@
                                 조건이 충족했을때 SQL문
                             </if>
                         2. FOREACH
-
-
-
-
-
+                            <foreach collection="반복할리스트/배열변수명" item="반복변수명" separator="반복사이문자">
+                                반복할 SQL 문 + #{ 반복변수명 }
+                            </foreach>
 
 
 
