@@ -16,7 +16,7 @@ public class StudentService {
 
     // [1] 학생 점수 등록
     public int save(Map<String , Object> map ){
-        System.out.println("StudentService.save");
+
         // (1) insert 실행 전 map 매개변수
         System.out.println("map = " + map); // sno 없다
         // (*) insert 실행
@@ -29,7 +29,7 @@ public class StudentService {
     }
     // [2] 학생 전체 조회
     public List< Map<String,Object> > findAll(){
-        System.out.println("StudentService.findAll");
+
         // return null;
         return studentMapper.findAll();
     }
