@@ -40,7 +40,7 @@ public class LogCheck {
         // AOP 제공하는 인터페이스 : ProceedingJoinPoint
         System.out.println( joinPoint.getArgs() ); // 발동된 메소드의 인수 반환/가져오기 [ 배열 타입 으로 반환 : 인수가 여러개 있을 수 있으므로  ]
         System.out.println( joinPoint.getSignature() ); // 발동된 메소드의 선언부( 반환타입 함수명 매개변수 정보 ) 반환/가져오기
-        // (1) 발동된 메소드의 함수명
+        // (1) 발동된 메소드의 정보
         System.out.println("[AOP] 현재 실행된 서비스명 : " + joinPoint.getSignature() );
         // (2) 발동된 메소드의 인수값 , Arrays.toString( 배열타입의변수명 ) : 배열내 값들을 문자열로 반환 ( vs DTO의 toString() 같은 의미 )
         System.out.println("[AOP] 현재 실행된 서비스의 인수 : " + Arrays.toString( joinPoint.getArgs() ));
