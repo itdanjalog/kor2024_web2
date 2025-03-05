@@ -83,9 +83,10 @@
     5. MVC2 3tire 패턴 지원
     + 호환성 : JPA/mybatis등등 , 유지보수 용이 , Rest Api
 
-문제1] MVC 패턴에서는 controller 에서 service 메소드를 호출하고 매개변수와 리턴 주고받는 행위
+문제1] MVC 패턴에서는 controller 에서 service 메소드를 호출하고 매개변수와 리턴 주고받는 방법
     조건1 : Service 에 method1 함수를 선언한다.
     조건2 : Controller 에서 Service 의 method1 메소드 를 호출하는 코드 방법 5가지 ( 자바방식, 스프링방식 )
+
         [1 자바] 인스턴스 생성하여 메소드를 호출한다. (변수에 인스턴스 저장 )
             클래스명 변수명 = new 생성자명();
             변수명.메소드명();
