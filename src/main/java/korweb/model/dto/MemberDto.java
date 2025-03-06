@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import korweb.model.entity.MemberEntity;
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter @Setter @ToString @Builder // 룸복
@@ -24,7 +25,12 @@ public class MemberDto {
         return MemberEntity.builder()
                 .mno( this.mno )
                 .mid( this.mid )
-                .mpwd( this.mpwd )
+                 //.mpwd( this.mpwd ) // 시큐리티 암호화 하기전
+
+                // + 시큐리티 암호화 했을때 , Bcrypt 객체를 이용한 암호화 하기
+                // 회원가입 할때 현재 builder 사용하므로 암호화가 적용된다.
+                .mpwd( new BCryptPasswordEncoder().encode( this.mpwd ) )
+
                 .mname( this.mname )
                 .memail( this.memail)
                 .mimg( this.mimg )

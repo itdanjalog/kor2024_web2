@@ -23,7 +23,7 @@
         - 클래스 위에 @Configuration 빈등록한다.
     2. filterChain 함수를 만든다.
         public SecurityFilterChain filterChain(HttpSecurity http ) throws Exception {}
-    3. 모든 페이지는 권한없이 접속/요청 설정 ,
+    3. HTTP URL 요청에 따른 권한/상태 확인후 자원 허가 제한 ,
         (1) .antMatcher("/URL") ).permitAll(); : 지정한 URL은 모든 허가.
         (2) .antMatcher("/URL") ).authenticated() : 지정한 URL은 인증된 회원만 허가.
         (3) .antMatcher("/URL") ).hasRole() : 지정한 URL은 정의된 등급이면 회원만 허가.
@@ -42,6 +42,21 @@
             // [2] http 객체를 빌드/실행하여 보안 필터 체인을 생성
             return http.build();
         }
+
+    4. 암호화란?
+        - 사람이 정보를 이해할 수 없도록 자기만의 방법으로 변경
+        - 예] 비밀밀번호를 그대로 저장하지 않고 해싱[암호화]하여 저장
+        - 암호화 알고리즘 종류
+            BCrypt : 단방향 암호화 , new BCryptPasswordEncoder()
+            SHA-256 : 단방향 암호화 , MessageDigest.getInsance("SHA-256")
+            등등
+        - Bcrypt 사용법
+            1. BCryptPasswordEncoder bpe = new BCryptPasswordEncoder();
+            2. String result = bpe.encode( 암호화하고싶은자료 );
+            -> result 에 암호화된 결과를 저장할 수 있다.
+            * 암호화된 비밀번호의 데이터베이스 필드 길이를 최소 60이상
+            * 암호화된 길이는 60자리의 문자열
+
 
 
 
