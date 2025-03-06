@@ -26,13 +26,17 @@
     3. 모든 페이지는 권한없이 접속/요청 설정 ,
         (1) .antMatcher("/URL") ).permitAll(); : 지정한 URL은 모든 허가.
         (2) .antMatcher("/URL") ).authenticated() : 지정한 URL은 인증된 회원만 허가.
+        (3) .antMatcher("/URL") ).hasRole() : 지정한 URL은 정의된 등급이면 회원만 허가.
+        (4) .antMatcher("/URL") ).hasAnyRole() : 지정한 URL은 정의된 여러 등급이 포함되면 허가
 
         @Bean // 필드 또는 메소드에 빈 등록하는 방법
         public SecurityFilterChain filterChain(HttpSecurity http ) throws Exception {
             http.authorizeHttpRequests( ( httpReq ) -> {
-                        httpReq
+                    httpReq
                             .requestMatchers( AntPathRequestMatcher.antMatcher("/board/write") ).authenticated()
-                            .requestMatchers(AntPathRequestMatcher.antMatcher("/**") ).permitAll()
+                            .requestMatchers( AntPathRequestMatcher.antMatcher("/chat") ).hasRole("USER")
+                            .requestMatchers( AntPathRequestMatcher.antMatcher("/admin") ).hasAnyRole( "admin" , "team1" )
+                            .requestMatchers(AntPathRequestMatcher.antMatcher("/**") ).permitAll();
             } );
 
             // [2] http 객체를 빌드/실행하여 보안 필터 체인을 생성
