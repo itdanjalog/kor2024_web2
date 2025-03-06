@@ -26,7 +26,6 @@ public class SecurityConfig {
                             .requestMatchers( AntPathRequestMatcher.antMatcher("/admin") ).hasAnyRole( "admin" , "team1" )
                             .requestMatchers(AntPathRequestMatcher.antMatcher("/**") ).permitAll();
         } );
-
         // [4] CSRF : post/put (BODY) 요청을 금지  , 특정한 URL만 post/put 가능하도록 수동 허용
         // 개발 : CSRF 사용안함 , 개발 환경에서는 끄고 사용하는 경우가 많다.
         http.csrf(AbstractHttpConfigurer :: disable ); // csrf 끄기. --> post/put 사용할수 있다.
