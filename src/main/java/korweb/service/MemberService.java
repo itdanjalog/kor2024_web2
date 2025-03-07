@@ -10,6 +10,9 @@ import korweb.model.entity.PointEntity;
 import korweb.model.repository.MemberRepository;
 import korweb.model.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MemberService {
+public class MemberService implements UserDetailsService {
+
     @Autowired private MemberRepository memberRepository;
 
     @Autowired private FileService fileService; // 파일 서비스 객체
@@ -59,51 +63,62 @@ public class MemberService {
         else{ return  false;}
     } // f end
 
-    // [2]. 로그인 서비스
-    @Transactional // 트랜잭션
-    public boolean login( MemberDto memberDto ){
-        //[방법1]
-        /*
-        // (1) 모든 회원 엔티티를 조회한다.
-        List<MemberEntity> memberEntityList = memberRepository.findAll();
-        // (2) 모든 회원 엔티티를 하나씩 조회한다.
-        for( int index = 0 ; index <= memberEntityList.size()-1 ; index++ ){
-            // (3) index번째의 엔티티를 꺼내기
-            MemberEntity memberEntity = memberEntityList.get(index);
-            // (4) index번째의 엔티티 아이디가 입력받은(dto) 아이디와 같으면
-            if( memberEntity.getMid().equals( memberDto.getMid() ) ) {
-                // (5) index번째의 엔티티 비밀번호가 입력받은(dto)비밀번호와 같으면
-                if( memberEntity.getMpwd().equals( memberDto.getMpwd() ) ){
-                    System.out.println(" login OK ");
-                    return true; // 로그인 성공
-                } // if end
-            } // if end
-        } // for end
-        return false; // 로그인 실패
-        */
+    // [2]. 로그인 서비스 // 시큐리티 이후에 사용하지 않는다.
+//    @Transactional // 트랜잭션
+//    public boolean login( MemberDto memberDto ){
+//        //[방법1]
+//        /*
+//        // (1) 모든 회원 엔티티를 조회한다.
+//        List<MemberEntity> memberEntityList = memberRepository.findAll();
+//        // (2) 모든 회원 엔티티를 하나씩 조회한다.
+//        for( int index = 0 ; index <= memberEntityList.size()-1 ; index++ ){
+//            // (3) index번째의 엔티티를 꺼내기
+//            MemberEntity memberEntity = memberEntityList.get(index);
+//            // (4) index번째의 엔티티 아이디가 입력받은(dto) 아이디와 같으면
+//            if( memberEntity.getMid().equals( memberDto.getMid() ) ) {
+//                // (5) index번째의 엔티티 비밀번호가 입력받은(dto)비밀번호와 같으면
+//                if( memberEntity.getMpwd().equals( memberDto.getMpwd() ) ){
+//                    System.out.println(" login OK ");
+//                    return true; // 로그인 성공
+//                } // if end
+//            } // if end
+//        } // for end
+//        return false; // 로그인 실패
+//        */
+//        // [방법2] JPA Repository 추상메소드 활용.
+//        boolean result
+//        = memberRepository.existsByMidAndMpwd( memberDto.getMid() , memberDto.getMpwd() );
+//
+//        if( result == true ){
+//            System.out.println("로그인성공");
+//            setSession( memberDto.getMid() ); // 로그인 성공시 세션에 아이디 저장
+//            //  포인트 DTO 생성
+//            PointDto pointDto = PointDto.builder()
+//                    .pcontent("로그인접속")
+//                    .pcount( 1 ).build();
+//            // - 현재 로그인된 엔티티 찾기  // .findById( pk번호 ) : 지정한 pk번호의 엔티티 조회
+//            MemberEntity memberEntity = memberRepository.findById(  getMyInfo().getMno() ).get();
+//            // 포인트 지급 함수
+//            pointPayment( pointDto , memberEntity );
+//
+//            return true; // 로그인 성공
+//        }else{
+//            System.out.println("로그인실패");
+//            return false; // 로그인 실패
+//        }
+//    } // f end
 
-        // [방법2] JPA Repository 추상메소드 활용.
-        boolean result
-        = memberRepository.existsByMidAndMpwd( memberDto.getMid() , memberDto.getMpwd() );
+    // [ 2 ] : 시큐리티 에서의 로그인 함수
+        // (1) 해당 서비스 클래스명 뒤에 implements UserDetailsService
+        // (2) 'loadUserByUsername' 메소드를 오버라이딩/재정의 한다.
+    @Override
+    public UserDetails loadUserByUsername(String mid) throws UsernameNotFoundException {
+        System.out.println("MemberService.loadUserByUsername");
+        System.out.println("mid = " + mid); // 로그인시 입력받은 mid
 
-        if( result == true ){
-            System.out.println("로그인성공");
-            setSession( memberDto.getMid() ); // 로그인 성공시 세션에 아이디 저장
-            //  포인트 DTO 생성
-            PointDto pointDto = PointDto.builder()
-                    .pcontent("로그인접속")
-                    .pcount( 1 ).build();
-            // - 현재 로그인된 엔티티 찾기  // .findById( pk번호 ) : 지정한 pk번호의 엔티티 조회
-            MemberEntity memberEntity = memberRepository.findById(  getMyInfo().getMno() ).get();
-            // 포인트 지급 함수
-            pointPayment( pointDto , memberEntity );
+        return null;
+    }
 
-            return true; // 로그인 성공
-        }else{
-            System.out.println("로그인실패");
-            return false; // 로그인 실패
-        }
-    } // f end
     // ===================== 세션 관련 함수 ============== //
     // (1) 내장된 톰캣 서버의 요청 객체
     @Autowired private HttpServletRequest request;
@@ -149,6 +164,7 @@ public class MemberService {
         }
         return null; // * 비로그인상태이면
     } // f end
+
     // [7] 현재 로그인된 회원 탈퇴
     public boolean myDelete( ){
         String mid = getSession(); // 1. 현재 세션에 저장된 회원 아이디 조회
