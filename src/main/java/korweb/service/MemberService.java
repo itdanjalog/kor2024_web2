@@ -10,6 +10,7 @@ import korweb.model.entity.PointEntity;
 import korweb.model.repository.MemberRepository;
 import korweb.model.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -145,32 +146,47 @@ public class MemberService implements UserDetailsService {
     // (1) 내장된 톰캣 서버의 요청 객체
     @Autowired private HttpServletRequest request;
 
-    // [3] 세션객체내 정보 추가 : 세션객체에 로그인된 회원아이디를 추가하는 함수. ( 로그인 )
-    public boolean setSession( String mid ){
-        // (2) 요청 객체를 이용한 톰캣내 세션 객체를 반환한다.
-        HttpSession httpSession = request.getSession();
-        // (3) 세션 객체에 속성(새로운 값) 추가한다.
-        httpSession.setAttribute( "loginId" , mid );
-        return true;
-    } // f end
+    // [3] 세션객체내 정보 추가 : 세션객체에 로그인된 회원아이디를 추가하는 함수. ( 로그인 ) // 시큐리티 이후에는 사용하지 않는다. // 시큐리티 자동으로 세션 추가해준다.
+//    public boolean setSession( String mid ){
+//        // (2) 요청 객체를 이용한 톰캣내 세션 객체를 반환한다.
+//        HttpSession httpSession = request.getSession();
+//        // (3) 세션 객체에 속성(새로운 값) 추가한다.
+//        httpSession.setAttribute( "loginId" , mid );
+//        return true;
+//    } // f end
 
-    // [4] 세션객체내 정보 반환 : 세션객체에 로그인된 회원아이디 반환하는 함수 ( 내정보 조회 , 수정 등등 )
+    // [4] 세션객체내 정보 반환 : 세션객체에 로그인된 회원아이디 반환하는 함수 ( 내정보 조회 , 수정 등등 ) // 시큐리티 이후에 코드 수정.
     public String getSession( ){
-        // (2)
-        HttpSession httpSession = request.getSession();
-        // (4) 세션 객체에 속성명의 값 반환한다. * 반환타입이 Object 이다.
-        Object object = httpSession.getAttribute( "loginId");
-        // (5) 검사후 타입변환
-        if( object != null ){// 만약에 세션 정보가 존재하면
-            String mid = (String)object; // Object타입 --> String타입
-            return mid;
-        }
-        return null;
-    } // f end
+        // (1) 시큐리티 에서 자동으로 생성한 (로그인) 세션 꺼내기 , 기존 세션 사용법과 다르다.
+            // SecurityContextHolder : 시큐리티에 관련된 정보 저장소 // .getContext() : 저장소 반환
+            // .getAuthentication() : 저장소에서 인증서 반환 // .getPrincipal(); : 중요한 인증 정보
+        Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        // (2) 만약에 비로그인[ anonymousUser ] 이면
+        if( object.equals("anonymousUser") ){  return null; } // 비로그인 상태이면 null 반환
+        // (3) 로그인 상태이면 로그인 구현할때 'loadUserByUsername' 메소드에서 반환한 userDetails 로 타입변환
+        UserDetails userDetails = (UserDetails) object;
+        // (4) 로그인된 정보에서 mid 꺼낸다.
+        String loginMid = userDetails.getUsername(); // Username == mid
+        // (5) 로그인된 mid를 반환한다.
+        return loginMid;
+    }
+
+//    public String getSession( ){
+//        // (2)
+//        HttpSession httpSession = request.getSession();
+//        // (4) 세션 객체에 속성명의 값 반환한다. * 반환타입이 Object 이다.
+//        Object object = httpSession.getAttribute( "loginId");
+//        // (5) 검사후 타입변환
+//        if( object != null ){// 만약에 세션 정보가 존재하면
+//            String mid = (String)object; // Object타입 --> String타입
+//            return mid;
+//        }
+//        return null;
+//    } // f end
 
     // [5] 세션객체내 정보 초기화 : 로그아웃
     public boolean deleteSession(){
-        HttpSession httpSession = request.getSession(); // (2)
+        HttpSession httpSession = request.getSession();
         // (3) 세션객체 안에 특정한 속성명 제거
         httpSession.removeAttribute( "loginId");
         return true;
