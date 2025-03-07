@@ -10,6 +10,7 @@ import korweb.model.entity.PointEntity;
 import korweb.model.repository.MemberRepository;
 import korweb.model.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -116,7 +117,28 @@ public class MemberService implements UserDetailsService {
         System.out.println("MemberService.loadUserByUsername");
         System.out.println("mid = " + mid); // 로그인시 입력받은 mid
 
-        return null;
+        // (3) 입력받은 mid 이용하여 데이터베이스의 저장된 암호화패스워드를 가져오기.
+        MemberEntity memberEntity = memberRepository.findByMid( mid ); // - 입력받은 아이디로 회원 엔티티 찾기
+        if( memberEntity == null ){  // - 입력받은 아이디의 엔티티가 없으면
+            throw new UsernameNotFoundException("없는 아이디 입니다.");
+            // throw : 던지다 뜻 // new UsernameNotFoundException : 예외클래스 강제 실행
+        }
+        // - 입력받은 아이디의 엔티티가 존재하면 암호화된 패스워드 확인
+        String password = memberEntity.getMpwd();
+        System.out.println("password = " + password);
+
+        // (4) 입력받은 mid 와 입력받은 mid의 암호화된 패스워드를 리턴. <UserDetails>
+            // UserDetails : 인터페이스 , 시큐리티에서 사용하는 유저 정보를 조작하는 인터페이스
+            // User : 클래스 , UserDetails 를 구현하는 구현(객)체
+                // --> 시큐리티는 UserDetails 반환 하면 자동으로 로그인 처리를 해준다.
+                // 단] 입력받은 id 와 입력받은 id의 암호화된password 대입 해줘야 한다.
+        UserDetails user = User.builder()
+                .username( mid )
+                .password( password )
+                .build();
+
+        // (5) UserDetails 반환
+        return user;
     }
 
     // ===================== 세션 관련 함수 ============== //

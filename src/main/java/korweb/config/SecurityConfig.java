@@ -43,8 +43,21 @@ public class SecurityConfig {
                         .loginProcessingUrl("/member/login.do") // 로그인을 처리할 요청 URL 정의 // POST 방식
                         .usernameParameter("mid")   // 로그인에 사용할 id 변수명
                         .passwordParameter("mpwd")  // 로그인에 사용한 password 변수명
-                        .defaultSuccessUrl("/") // 만약에 로그인 성공시 이동할 page url 정의
-                        .failureUrl("/member/login") // 만약에 로그인 실패시 이동할 page url 정의
+                        //.defaultSuccessUrl("/") // 만약에 로그인 성공시 이동할 page url 정의
+                        //.failureUrl("/member/login") // 만약에 로그인 실패시 이동할 page url 정의
+
+                        // --> Fetch/Axios ( json형식 ) 에서는 아래와 같은 방법으로 사용한다.
+                        .successHandler( ( request , response , exception ) -> {
+                            System.out.println("로그인 성공!!!");
+                            response.setContentType("application/json"); // 응답 방식을 JSON 변경
+                            response.getWriter().println("true"); // JSON 형식의 true 응답하기.
+                        })
+                        .failureHandler( ((request, response, exception) -> {
+                            System.out.println("로그인 실패!!!");
+                            response.setContentType("application/json"); // 응답 방식을 JSON 변경
+                            response.getWriter().println("false"); // JSON 형식의 false 응답하기.
+                        }))
+
         );
         // [6] 로그아웃 , 시큐리티에 로그아웃 기능 [커스텀] 을 제공한다.
         http.logout( logout -> logout
