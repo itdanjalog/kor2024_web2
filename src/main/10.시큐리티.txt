@@ -121,3 +121,77 @@
                 (1) UserDetails userDetails = (UserDetails)Object;     // 현재 로그인된 회원의 인증정보를 타입변환
                 (2) String loginMid = userDetails.getUsername()        // 현재 로그인된 회원의 아이디 반환
         ====================================================================================================
+
+    7. Oauth2
+        1. 정의 : 제 3자 애플리케이션에서 사용자의 비밀번호를 직접 제공받지 않고도 인증 과 권한 부여
+        2. 목적 : 인증 과 인가
+        3. Oauth2 서비스 제공 회사 : 구글,페이스북,카카오,네이버 등등
+
+        [1] oauth2 라이브러리 설치 , https://start.spring.io/
+            implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+        [2] 각 회사별 oauth2 설정
+            1. [카카오]
+                1. 카카오 개발자 센터 : https://developers.kakao.com/
+                2. 로그인 후 -> [ 내 애플리케이션 ] -> 전체 애플리케이션 에서 생성한 애플리케이션 선택
+                3. 사이드바 메뉴 확인
+                    [ 앱키 ] REST API (본인)키 (확인) : 937f0beba62febee4bcd586825470681
+                    [ 플랫폼 ] Web 사이트 도메인 (추가) : http://localhost:8080
+                    [ 카카오 로그인 ]
+                        활성화 설정 : ON
+                        Redirect URI (추가) : http://localhost:8080/login/oauth2/code/kakao
+                            * 카카오에서 로그인 성공하면 반환할 url 정의하는곳
+                    [ 동의 항목 ]
+                        1. 닉네임 -> [설정] -> 필수 동의 선택 -> 동의 목적 : 테스트
+                        2. 프로필 사진 -> [설정] -> 필수 동의 선택 -> 동의 목적 : 테스트
+                            * 권한없음 은 사업자(비지니스) 등록후 심사 하면 가능하다
+                    [ 보안 ] , 비지니스보안X
+                        Client Secret -> 1. [ 코드 생성 ] -> 2.활성화 상태 : 사용함
+                        (확인) YXAvvUiYSeUbXtgdpLu0qlyfLBPcTUPJ
+            2. [네이버]
+            3. [구글]
+
+        [3] HTML 에서 카카오 로그인 링크 <a> 마크업 만들기
+            ( login.html )
+                <a href="/oauth2/authorization/kakao"> 카카오로그인 </a>
+                <a href="/oauth2/authorization/naver"> 네이버로그인 </a>
+                <a href="/oauth2/authorization/google"> 구글로그인 </a>
+
+        [4] application.properties 에서 각 소셜 연동 코드 작성한다.
+            1. [카카오]
+                # [ OATUH2 카카오 ] : https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api
+                spring.security.oauth2.client.registration.kakao.client-id =REST앱키넣어주세요.
+                spring.security.oauth2.client.registration.kakao.client-secret =보안키넣어주세요.
+                spring.security.oauth2.client.registration.kakao.scope=동의항목ID명,동의항목ID명
+
+                spring.security.oauth2.client.registration.kakao.client-authentication-method=client_secret_post
+                spring.security.oauth2.client.registration.kakao.authorization-grant-type=authorization_code
+                spring.security.oauth2.client.registration.kakao.redirect-uri={baseUrl}/login/oauth2/code/{registrationId}
+
+                spring.security.oauth2.client.provider.kakao.authorization-uri=https://kauth.kakao.com/oauth/authorize
+                spring.security.oauth2.client.provider.kakao.token-uri=https://kauth.kakao.com/oauth/token
+                spring.security.oauth2.client.provider.kakao.user-info-uri=https://kapi.kakao.com/v2/user/me
+                spring.security.oauth2.client.provider.kakao.user-name-attribute=id
+
+        [5] 시큐리티 설정 클래스 에서 oauth2 로그인 페이지 와 서비스 정의하기
+            http.oauth2Login( oauth2Login -> {
+               oauth2Login.loginPage("/member/login"); // oauth2 실행할 URL 페이지 정의
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
