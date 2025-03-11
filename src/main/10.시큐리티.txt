@@ -175,8 +175,21 @@
 
         [5] 시큐리티 설정 클래스 에서 oauth2 로그인 페이지 와 서비스 정의하기
             http.oauth2Login( oauth2Login -> {
-               oauth2Login.loginPage("/member/login"); // oauth2 실행할 URL 페이지 정의
+               oauth2Login
+                       .loginPage("/member/login") // oauth2 실행할 URL 페이지 정의
+                       // oauth2 에서 로그인 성공시 유저 정보를 받을 객체 정의
+                       .userInfoEndpoint( userinfo -> {  userinfo.userService( memberService );   } );
             });
+
+        [6] memberSerive 클래스에서 oauth2 관련 인터페이스 구현/재정의
+            1. memberService 클래스에 OAuth2UserService< OAuth2UserRequest , OAuth2User > 인터페이스를 구현 한다.
+                public class MemberService implements UserDetailsService , OAuth2UserService< OAuth2UserRequest , OAuth2User > { }
+
+            2. 'loadUser' 추상메소드를 재정의한다.
+                @Override
+                public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+                    return null;
+                }
 
 
 

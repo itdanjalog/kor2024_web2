@@ -68,9 +68,12 @@ public class SecurityConfig {
         // [7] 로그인 을 처리할 서비스 객체 정의
         http.userDetailsService(  memberService );
 
-        // [8] 시큐리티에서 OAUTH2 로그인페이지와 서비스 정의
+        // [8] 시큐리티에서 OAUTH2 로그인페이지와 (커스텀/오버라이딩/재정의)서비스 정의
         http.oauth2Login( oauth2Login -> {
-           oauth2Login.loginPage("/member/login"); // oauth2 실행할 URL 페이지 정의
+           oauth2Login
+                   .loginPage("/member/login") // oauth2 실행할 URL 페이지 정의
+                   // oauth2 에서 로그인 성공시 유저 정보를 받을 객체 정의
+                   .userInfoEndpoint( userinfo -> {  userinfo.userService( memberService );   } );
         });
 
 
