@@ -27,7 +27,8 @@ public class SecurityConfig {
                     httpReq
                             .requestMatchers( AntPathRequestMatcher.antMatcher("/board/write") ).authenticated()
                             .requestMatchers( AntPathRequestMatcher.antMatcher("/chat") ).hasRole("USER")
-                            .requestMatchers( AntPathRequestMatcher.antMatcher("/admin") ).hasAnyRole( "admin" , "team1" )
+                            .requestMatchers( AntPathRequestMatcher.antMatcher("/api2") ).hasRole("OAUTH")
+                            .requestMatchers( AntPathRequestMatcher.antMatcher("/admin") ).hasAnyRole( "ADMIN" , "TEAM1" )
                             .requestMatchers(AntPathRequestMatcher.antMatcher("/**") ).permitAll();
         } );
         // [4] CSRF : post/put (BODY) 요청을 금지  , 특정한 URL만 post/put 가능하도록 수동 허용
@@ -75,6 +76,16 @@ public class SecurityConfig {
                    // oauth2 에서 로그인 성공시 유저 정보를 받을 객체 정의
                    .userInfoEndpoint( userinfo -> {  userinfo.userService( memberService );   } );
         });
+
+        // 7. 예외(오류)페이지 403 핸들러
+        http.exceptionHandling((exceptionConfig) ->
+                exceptionConfig
+                        .accessDeniedHandler(
+                                (request, response, accessDeniedException) -> {
+                                    response.sendRedirect("/error403");
+                                }
+                        ) );
+
 
 
         // [2] http 객체를 빌드/실행하여 보안 필터 체인을 생성

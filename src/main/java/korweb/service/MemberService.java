@@ -3,6 +3,7 @@ package korweb.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import korweb.model.dto.LoginDto;
 import korweb.model.dto.MemberDto;
 import korweb.model.dto.PointDto;
 import korweb.model.entity.MemberEntity;
@@ -10,6 +11,8 @@ import korweb.model.entity.PointEntity;
 import korweb.model.repository.MemberRepository;
 import korweb.model.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -73,9 +76,16 @@ public class MemberService implements UserDetailsService , OAuth2UserService< OA
         } else if (registrationId.equals("naver")) {}
         else if( registrationId.equals("google") ){}
 
-        // (9) DefaultOauth2User 타입으로 리턴 해야한다. 매개변수 3가지 : (1) 권한(ROLE) 목록 (2) 사용자정보 (3) 식별키
-        DefaultOAuth2User user = new DefaultOAuth2User( null , profile , "nickname"  );
-        return user;
+        // 2-1 권한 목록에 추가
+        List<GrantedAuthority> 권한목록 = new ArrayList<>();
+        권한목록.add(  new SimpleGrantedAuthority("ROLE_USER" )  );
+        권한목록.add(  new SimpleGrantedAuthority("ROLE_OAUTH" )  );
+
+        // 3 : 일반회원(UserDetails) + OAUTH2(OAuth2User) 통합회원 = DTO 같이 쓰기
+        LoginDto loginDto = LoginDto.builder()   // oauth2는 패스워드를 알수없다..
+                .mid( nickname ).mrolList( 권한목록 ).build();
+        return loginDto;
+
     }
 
     @Autowired private MemberRepository memberRepository;
@@ -180,18 +190,21 @@ public class MemberService implements UserDetailsService , OAuth2UserService< OA
         String password = memberEntity.getMpwd();
         System.out.println("password = " + password);
 
+        List<GrantedAuthority> 등급목록 = new ArrayList<>();
+        등급목록.add( new SimpleGrantedAuthority("ROLE_USER" ) ); // ROLE_등급명
+
         // (4) 입력받은 mid 와 입력받은 mid의 암호화된 패스워드를 리턴. <UserDetails>
             // UserDetails : 인터페이스 , 시큐리티에서 사용하는 유저 정보를 조작하는 인터페이스
             // User : 클래스 , UserDetails 를 구현하는 구현(객)체
                 // --> 시큐리티는 UserDetails 반환 하면 자동으로 로그인 처리를 해준다.
                 // 단] 입력받은 id 와 입력받은 id의 암호화된password 대입 해줘야 한다.
-        UserDetails user = User.builder()
-                .username( mid )
-                .password( password )
+        LoginDto loginDto = LoginDto.builder()
+                .mid( mid )   // 실제 아이디
+                .mpwd( password ) // 실제 비밀번호(암호화)
+                .mrolList( 등급목록 ) // ROLE 등급
                 .build();
 
-        // (5) UserDetails 반환
-        return user;
+        return loginDto;
     }
 
     // ===================== 세션 관련 함수 ============== //
