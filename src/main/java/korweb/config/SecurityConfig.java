@@ -68,6 +68,15 @@ public class SecurityConfig {
         // [7] 로그인 을 처리할 서비스 객체 정의
         http.userDetailsService(  memberService );
 
+
+        http.oauth2Login( oAuth2LoginConfigurer -> {
+            oAuth2LoginConfigurer
+                    .loginPage("/member/login") // oauth2 로그인을 할 view url 정의
+                    .userInfoEndpoint( userInfoEndpointConfig ->
+                            userInfoEndpointConfig.userService(memberService));
+        } );
+
+
         // [2] http 객체를 빌드/실행하여 보안 필터 체인을 생성
         return http.build();
     } // F END
