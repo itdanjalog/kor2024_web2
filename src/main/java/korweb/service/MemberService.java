@@ -11,6 +11,8 @@ import korweb.model.entity.PointEntity;
 import korweb.model.repository.MemberRepository;
 import korweb.model.repository.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -77,13 +79,17 @@ public class MemberService implements UserDetailsService , OAuth2UserService< OA
         // (9) DefaultOauth2User 타입으로 리턴 해야한다. 매개변수 3가지 : (1) 권한(ROLE) 목록 (2) 사용자정보 (3) 식별키
         // DefaultOAuth2User user = new DefaultOAuth2User( null , profile , "nickname"  );
         // return user;
+        // (*) 권한부여하기.
+        List<GrantedAuthority> 권한목록 = new ArrayList<>();
+        권한목록.add( new SimpleGrantedAuthority("ROLE_USER") );
+        권한목록.add( new SimpleGrantedAuthority("ROLE_OAUTH") );
+
         LoginDto loginDto = LoginDto.builder()
-                .mid( nickname )
-                // oauth2 회원은 패스워드가 없다.
+                .mid( nickname ) // oauth2 회원은 패스워드가 없다.
+                .mrolList( 권한목록 ) // LoginDto 에 권한목록 넣어주기
                 .build();
         return loginDto; // 반환타입이 'OAuth2User' 이지만
         // loginDto 에서 'OAuth2User' 구현 했으므로 가능하다.
-
     }
 
     @Autowired private MemberRepository memberRepository;
@@ -197,9 +203,19 @@ public class MemberService implements UserDetailsService , OAuth2UserService< OA
 //                .username( mid )
 //                .password( password )
 //                .build();
+
+        // (*) 권한/등급 부여하기.
+        // GrantedAuthority: 시큐리티 사용자의 권한 조작하는 인터페이스
+        // SimpleGrantedAuthority : 시큐리티 사용자의 권한 클래스 ( 구현체 )
+        List<GrantedAuthority> 권한목록 = new ArrayList<>();
+        권한목록.add( new SimpleGrantedAuthority( "ROLE_USER" ) ); // 권한명 규칙 : ROLE_권한명
+        권한목록.add( new SimpleGrantedAuthority( "ROLE_GENERAL") ); // 권한은 여러개 넣을수 있다.
+        //+ DB에 존재하는 권한으로 부여할 수 있다 : "ROLE_+"변수명
+
         LoginDto loginDto = LoginDto.builder()
                 .mid( mid )
                 .mpwd( password )
+                .mrolList( 권한목록 ) // LoginDto 에 권한목록 넣어주기.
                 .build();
         // (5) UserDetails 반환
         // return user;
